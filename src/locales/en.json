@@ -1,0 +1,9 @@
+{
+  "hello": "Hello",
+  "app": {
+    "title": "Knift",
+    "slogan": "Learn to live"
+  },
+  "pages": {
+  }
+}

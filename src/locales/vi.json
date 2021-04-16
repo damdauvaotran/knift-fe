@@ -1,0 +1,22 @@
+{
+  "hello": "Chao",
+  "app": {
+    "title": "Knift",
+    "slogan": "Học đi mà làm người"
+  },
+  "page": {
+    "login": {
+      "title": "Đăng nhập",
+      "button": {
+        "login": "Đăng nhập",
+        "orRegister": "hoặc Đăng ký"
+      }
+    },
+    "register": {
+      "title": "Đăng ký",
+      "button": {
+        "register": "Đăng ký"
+      }
+    }
+  }
+}

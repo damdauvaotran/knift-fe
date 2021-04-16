@@ -1,0 +1,58 @@
+image: 'node:12.13.1-buster'
+
+# before_script:
+  # - npm install
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - node_modules
+
+before_script:
+  - npm ci --cache node_modules --prefer-offline
+
+# test:
+#   stage: test
+#   before_script:
+#     - npm install
+#   script:
+#     - node --version
+
+# ssh:
+#   stage: deploy
+#   script:
+#     - ssh root@$SERVER_IP
+
+build-dist:
+  stage: build
+  before_script:
+    - echo "Install dependency"
+    - npm install
+  script:
+    - echo "Build dist folder"
+    - npm run build
+    - ls
+
+
+deploy-stage:
+  stage: deploy
+  before_script:
+    - apt-get update
+    - 'which ssh-agent || apt-get install openssh-client -y'
+    - 'which git || apt-get install -y git '
+    - 'which rsync || apt-get install -y rsync '
+    - mkdir ~/.ssh
+
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    # Make folder
+    # - ssh $SERVER_USER@$SERVER_IP "[ ! -e /root/$APP_NAME ] || rm -r
+    #   /root/$APP_NAME; mkdir -p /root/knift-fe"
+
+    - ls
+    # Copy file
+    - rsync -zr build/* $SERVER_USER@$SERVER_IP:/var/www/html/
+    # Restart nginx
+    - ssh $SERVER_USER@$SERVER_IP "service nginx restart"
