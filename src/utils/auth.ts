@@ -1,6 +1,12 @@
 import cookie from "js-cookie";
 import jwt from "jsonwebtoken";
 
+export interface IUSerInfo {
+  username: string;
+  id: number;
+  r: string;
+}
+
 export const getUserToken = () => {
   return cookie.get("kniftToken");
 };
@@ -23,7 +29,7 @@ export const isLogin = () => {
   return false;
 };
 
-export const getUserData = (): any => {
+export const getUserData = (): IUSerInfo => {
   const token = getUserToken() || "";
-  return jwt.decode(token);
+  return jwt.decode(token) as IUSerInfo;
 };
