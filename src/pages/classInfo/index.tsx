@@ -1,14 +1,17 @@
 import { FC, useEffect, useState } from "react";
 import { Table, Button } from "antd";
+import { useParams } from "react-router-dom";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
-import { getAllLesson } from "../../api/student/lesson";
+import { getAllLessonByClassId } from "../../api/student/lesson";
 
 const ClassInfo: FC = () => {
   const [lessonList, setLessonList] = useState<any[]>([]);
   const history = useHistory();
+  // @ts-ignore
+  const { id } = useParams();
   useEffect(() => {
-    getAllLesson().then((data: any) => {
+    getAllLessonByClassId(id).then((data: any) => {
       console.log(data);
       if (data?.success) {
         setLessonList(data.data.lessons);

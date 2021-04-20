@@ -1,14 +1,17 @@
 import { FC, useEffect, useState } from "react";
 import { Table, Button } from "antd";
 import { withLayout } from "../../shared-component/Layout/Layout";
-import { useHistory } from "react-router-dom";
-import { getAllConference } from "../../api/student/conference";
+import { useHistory, useParams } from "react-router-dom";
+
+import { getAllConferenceWithLessonId } from "../../api/student/conference";
 
 const LessonInfo: FC = () => {
   const [confList, setConfList] = useState<any[]>([]);
   const history = useHistory();
+  // @ts-ignore
+  const { id } = useParams();
   useEffect(() => {
-    getAllConference().then((data: any) => {
+    getAllConferenceWithLessonId(id).then((data: any) => {
       console.log(data);
       if (data?.success) {
         setConfList(data.data.conferences);

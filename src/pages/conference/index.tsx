@@ -3,28 +3,35 @@ import Webcam from "react-webcam";
 import { io } from "socket.io-client";
 // @ts-ignore
 import { Player } from "video-react";
-
+import {
+  AudioMutedOutlined,
+  DesktopOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 import { auth } from "../../utils";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { ConferenceRoom } from "../../utils/conferenceRoom";
 import Video from "../../shared-component/Video";
 import { consumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
+import "./conference.scss";
+import { Button, Tooltip } from "antd";
 
 const Conference: React.FC = () => {
-  const webcamRef = useRef<any>(null);
-  const userVideo = useRef<any>(null);
   const socketRef = useRef<any>();
   const conferenceRoomRef = useRef<ConferenceRoom>();
   const remoteStreamListRef = useRef<Map<string, any>>(new Map<string, any>());
 
   const [remoteStreamList, setRemoteStreamList] = useState<any[]>([]);
-
+  const [localStream, setLocalStream] = useState<MediaStream>(
+    new MediaStream()
+  );
   const [yourID, setYourID] = useState<number>();
   const [users, setUsers] = useState({});
   const [stream, setStream] = useState();
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
+  const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
 
   useEffect(() => {
     socketRef.current = io("localhost:8000");
@@ -59,6 +66,13 @@ const Conference: React.FC = () => {
 
     consumerObs.subscribe(addConsumer);
 
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: true })
+      .then(async (stream: MediaStream) => {
+        setLocalStream(stream);
+        await handleGetUserMedia(stream);
+      });
+
     return () => {
       console.log("Conference unmounting");
       consumerObs.unsubscribe(addConsumer);
@@ -66,6 +80,23 @@ const Conference: React.FC = () => {
 
     // RTC server setup
   }, []);
+
+  useEffect(() => {
+    console.log("local stream", localStream);
+  }, [localStream]);
+
+  useEffect(() => {
+    console.log("State remoteStreamList", remoteStreamList);
+  }, [remoteStreamList]);
+
+  const handleShareScreen = async () => {
+    // @ts-ignore
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      audio: true,
+      video: true,
+    });
+    setLocalStream(stream);
+  };
 
   const addConsumer = ({
     consumerStream,
@@ -95,20 +126,18 @@ const Conference: React.FC = () => {
     await a.produce("videoType", stream);
   };
 
-  useEffect(() => {
-    console.log("State remoteStreamList", remoteStreamList);
-  }, [remoteStreamList]);
-
   const { r } = getUserData();
   console.log("r", r);
   return (
-    <div>
-      <div>
-        <Webcam
-          audio={true}
-          ref={webcamRef}
-          onUserMedia={handleGetUserMedia}
-          hidden={r === "STUDENT"}
+    <div className="conf-wrapper">
+      <div className="local-cam-wrapper">
+        <Video
+          // @ts-ignore
+          srcObject={localStream}
+          autoPlay
+          playsInline
+          width={320}
+          height={240}
         />
       </div>
       <div id="remote">
@@ -116,6 +145,7 @@ const Conference: React.FC = () => {
           return (
             <Video
               // @ts-ignore
+
               className={`${consumerId}`}
               key={`remote_${consumerId}`}
               srcObject={remoteStreamListRef.current.get(consumerId)}
@@ -125,8 +155,29 @@ const Conference: React.FC = () => {
           );
         })}
       </div>
+      <div className="conf-util">
+        <Button
+          type="primary"
+          size="large"
+          shape="circle"
+          icon={<AudioMutedOutlined />}
+        />
+        <Button
+          type="primary"
+          size="large"
+          shape="circle"
+          icon={<DesktopOutlined />}
+        />
+        <Button
+          type="primary"
+          size="large"
+          danger
+          shape="circle"
+          icon={<PhoneOutlined />}
+        />
+      </div>
     </div>
   );
 };
 
-export default withLayout("1")(Conference);
+export default Conference;

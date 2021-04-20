@@ -1,0 +1,22 @@
+.conf-wrapper{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  .local-cam-wrapper {
+    position: absolute;
+    left: 10px;
+  }
+
+  .remote-cam-wrapper {
+
+  }
+  .conf-util{
+    display: flex;
+    justify-content: space-evenly;
+    position: fixed;
+    bottom: 100px;
+    width: 100%;
+  }
+}
+
+
