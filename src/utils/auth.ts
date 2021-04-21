@@ -2,9 +2,8 @@ import cookie from "js-cookie";
 import jwt from "jsonwebtoken";
 
 export interface IUSerInfo {
-  username: string;
   id: number;
-  r: string;
+  role: string;
 }
 
 export const getUserToken = () => {

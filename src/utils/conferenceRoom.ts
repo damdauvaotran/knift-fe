@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import * as mediaSoupClient from "mediasoup-client";
 import { _EVENTS, mediaType } from "../constants";
-import { consumerObs } from "../ observer/";
+import { consumerObs, closeConsumerObs } from "../ observer/";
 
 export class ConferenceRoom {
   public name: string;
@@ -232,6 +232,7 @@ export class ConferenceRoom {
     // });
     // elem.parentNode.removeChild(elem);
     // Todo: remove consume HTML element
+    closeConsumerObs.notify({ consumerId });
     this.consumers.delete(consumerId);
   }
 

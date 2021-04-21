@@ -8,11 +8,12 @@ import {
   DesktopOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
 import { auth } from "../../utils";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { ConferenceRoom } from "../../utils/conferenceRoom";
 import Video from "../../shared-component/Video";
-import { consumerObs } from "../../ observer/";
+import { consumerObs, closeConsumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
 import "./conference.scss";
 import { Button, Tooltip } from "antd";
@@ -32,6 +33,10 @@ const Conference: React.FC = () => {
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
+
+  // @ts-ignore
+  const { id: conferenceId } = useParams();
+  const { role, id: userId } = getUserData();
 
   useEffect(() => {
     socketRef.current = io("localhost:8000");
@@ -65,6 +70,7 @@ const Conference: React.FC = () => {
     };
 
     consumerObs.subscribe(addConsumer);
+    closeConsumerObs.subscribe(removeConsumer);
 
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
@@ -76,14 +82,26 @@ const Conference: React.FC = () => {
     return () => {
       console.log("Conference unmounting");
       consumerObs.unsubscribe(addConsumer);
+      closeConsumerObs.unsubscribe(removeConsumer);
     };
 
     // RTC server setup
   }, []);
 
   useEffect(() => {
-    console.log("local stream", localStream);
+    if (conferenceRoomRef.current) {
+      conferenceRoomRef.current?.closeProducer("videoType");
+      conferenceRoomRef.current.produce("videoType", localStream);
+    }
   }, [localStream]);
+
+  useEffect(() => {
+    if (isShareScreen) {
+      handleShareScreen();
+    } else {
+      handleVideoCall();
+    }
+  }, [isShareScreen]);
 
   useEffect(() => {
     console.log("State remoteStreamList", remoteStreamList);
@@ -98,6 +116,15 @@ const Conference: React.FC = () => {
     setLocalStream(stream);
   };
 
+  const handleVideoCall = async () => {
+    // @ts-ignore
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    setLocalStream(stream);
+  };
+
   const addConsumer = ({
     consumerStream,
     consumerId,
@@ -105,19 +132,21 @@ const Conference: React.FC = () => {
     consumerStream: MediaStream;
     consumerId: string;
   }) => {
-    const tempRemotes = [...remoteStreamList];
-    console.log("temp before", tempRemotes);
-    tempRemotes.push(consumerId);
     remoteStreamListRef.current.set(consumerId, consumerStream);
-    console.log("temp after", tempRemotes);
     setRemoteStreamList((old) => [...old, consumerId]);
   };
 
+  const removeConsumer = ({ consumerId }: { consumerId: string }) => {
+    console.log("removing ", consumerId);
+    remoteStreamListRef.current.delete(consumerId);
+    setRemoteStreamList((old) => old.filter((csId) => csId !== consumerId));
+  };
+
   const handleGetUserMedia = async (stream: MediaStream) => {
-    console.log(stream);
     const a = new ConferenceRoom(
+      // userId.toString(),
       Math.random().toString(),
-      "2",
+      conferenceId.toString(),
       socketRef.current
     );
 
@@ -126,8 +155,6 @@ const Conference: React.FC = () => {
     await a.produce("videoType", stream);
   };
 
-  const { r } = getUserData();
-  console.log("r", r);
   return (
     <div className="conf-wrapper">
       <div className="local-cam-wrapper">
@@ -167,6 +194,9 @@ const Conference: React.FC = () => {
           size="large"
           shape="circle"
           icon={<DesktopOutlined />}
+          onClick={() => {
+            setIsShareScreen(true);
+          }}
         />
         <Button
           type="primary"
