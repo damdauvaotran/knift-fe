@@ -1,13 +1,18 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
 import { getAllLessonByClassId } from "../../api/student/lesson";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "../../utils/time";
+
+const { Text } = Typography;
 
 const ClassInfo: FC = () => {
   const [lessonList, setLessonList] = useState<any[]>([]);
   const history = useHistory();
+  const { t } = useTranslation();
   // @ts-ignore
   const { id } = useParams();
   useEffect(() => {
@@ -20,27 +25,33 @@ const ClassInfo: FC = () => {
   }, []);
   const columns = [
     {
-      title: "Name",
+      title: t("name"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "subjectName",
-      dataIndex: ["subject", "name"],
-      key: "subjectName",
+      title: t("detail"),
+      dataIndex: "detail",
+      key: "detail",
     },
     {
-      title: "startTime",
+      title: t("start"),
       dataIndex: "startTime",
       key: "startTime",
+      render: (text: string) => {
+        return <Text>{formatDate(new Date(text))}</Text>;
+      },
     },
     {
-      title: "endTime",
+      title: t("end"),
       dataIndex: "endTime",
       key: "endTime",
+      render: (text: string) => {
+        return <Text>{formatDate(new Date(text))}</Text>;
+      },
     },
     {
-      title: "action",
+      title: t("action"),
       key: "action",
       dataIndex: "classId",
       render: (text: string, record: any) => (
@@ -63,7 +74,11 @@ const ClassInfo: FC = () => {
 
   return (
     <div>
-      <Table rowKey="classId" columns={columns} dataSource={lessonList}></Table>
+      <Table
+        rowKey="lessonId"
+        columns={columns}
+        dataSource={lessonList}
+      ></Table>
     </div>
   );
 };

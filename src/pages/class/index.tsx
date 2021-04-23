@@ -1,12 +1,19 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Typography } from "antd";
 import { getAllClass } from "../../api/student/class";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import "./class.scss";
+import { PlusOutlined } from "@ant-design/icons";
+import { formatDate } from "../../utils/time";
 
+const { Text } = Typography;
 const ClassList: FC = () => {
   const [classList, setClassList] = useState<any[]>([]);
   const history = useHistory();
+
+  const { t } = useTranslation();
   useEffect(() => {
     getAllClass().then((data: any) => {
       console.log(data);
@@ -17,27 +24,29 @@ const ClassList: FC = () => {
   }, []);
   const columns = [
     {
-      title: "Name",
+      title: t("page.class.title"),
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "subjectName",
+      title: t("page.class.subject"),
       dataIndex: ["subject", "name"],
       key: "subjectName",
     },
     {
-      title: "startTime",
+      title: t("start"),
       dataIndex: "startTime",
       key: "startTime",
+      render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
     },
     {
-      title: "endTime",
+      title: t("end"),
       dataIndex: "endTime",
       key: "endTime",
+      render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
     },
     {
-      title: "action",
+      title: t("action"),
       key: "action",
       dataIndex: "classId",
       render: (text: string, record: any) => (
@@ -48,7 +57,7 @@ const ClassList: FC = () => {
             redirectToClass(text);
           }}
         >
-          {text}
+          {t("detail")}
         </Button>
       ),
     },
@@ -59,6 +68,11 @@ const ClassList: FC = () => {
   };
   return (
     <div>
+      <div className="create-wrapper">
+        <Button type="primary" icon={<PlusOutlined />}>
+          {t("page.class.createClass")}
+        </Button>
+      </div>
       <Table rowKey="classId" columns={columns} dataSource={classList}></Table>
     </div>
   );

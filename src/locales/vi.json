@@ -4,6 +4,12 @@
     "title": "Knift",
     "slogan": "Học đi mà làm người"
   },
+  "start": "Bắt đầu",
+  "end" : "Kết thúc",
+  "join" : "Tham gia",
+  "action": "Thao tác",
+  "detail": "Chi tiết",
+  "name": "Tên",
   "page": {
     "login": {
       "title": "Đăng nhập",
@@ -17,6 +23,12 @@
       "button": {
         "register": "Đăng ký"
       }
+    },
+    "class": {
+      "title": "Lớp học",
+      "createClass" : "Tạo lớp học",
+      "subject": "Môn học",
+      "detail" : "Mô tả"
     }
   }
 }

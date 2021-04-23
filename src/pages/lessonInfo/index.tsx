@@ -1,13 +1,19 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button } from "antd";
+import { Table, Button, Typography } from "antd";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory, useParams } from "react-router-dom";
 
 import { getAllConferenceWithLessonId } from "../../api/student/conference";
+import { useTranslation } from "react-i18next";
+import { format } from "date-fns";
+import { formatDate } from "../../utils/time";
+
+const { Text } = Typography;
 
 const LessonInfo: FC = () => {
   const [confList, setConfList] = useState<any[]>([]);
   const history = useHistory();
+  const { t } = useTranslation();
   // @ts-ignore
   const { id } = useParams();
   useEffect(() => {
@@ -20,27 +26,29 @@ const LessonInfo: FC = () => {
   }, []);
   const columns = [
     {
-      title: "ID",
+      title: "s",
       dataIndex: "conferenceId",
       key: "id",
     },
     {
-      title: "status",
+      title: t("status"),
       dataIndex: "status",
       key: "subjectName",
     },
     {
-      title: "startTime",
+      title: t("start"),
       dataIndex: "startTime",
       key: "startTime",
+      render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
     },
     {
-      title: "endTime",
+      title: t("start"),
       dataIndex: "endTime",
       key: "endTime",
+      render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
     },
     {
-      title: "action",
+      title: t("action"),
       key: "action",
       dataIndex: "conferenceId",
       render: (text: string, record: any) => (
@@ -51,7 +59,7 @@ const LessonInfo: FC = () => {
             redirectToConferencePlayer(text);
           }}
         >
-          {text}
+          {t("join")}
         </Button>
       ),
     },
