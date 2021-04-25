@@ -10,6 +10,9 @@
   "action": "Thao tác",
   "detail": "Chi tiết",
   "name": "Tên",
+  "className": "Tên lớp học",
+  "createClass": "Tạo lớp học",
+  "subject": "Môn học",
   "page": {
     "login": {
       "title": "Đăng nhập",

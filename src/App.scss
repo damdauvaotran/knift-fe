@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  .ant-form-item-control-input-content {
+    flex-grow: 0;
+    width: 100%;
+    display: flex;
+  }
 }
 
 .App-logo {
@@ -28,3 +33,5 @@
   margin: 16px 24px 16px 0;
   float: left;
 }
+
+

@@ -20,6 +20,7 @@ import ConferencePlayer from "./pages/conference";
 import ClassList from "./pages/class";
 import ClassInfo from "./pages/classInfo";
 import LessonInfo from "./pages/lessonInfo";
+import CreateClass from "./pages/createClass";
 // import SubjectManager from "./pages/admin/subject";
 // import RoomManager from "./pages/admin/room";
 // import ShiftManager from "./pages/admin/shift";
@@ -49,16 +50,19 @@ function App() {
         <Switch>
           <Route exact path="/">
             {requireAuth(<ClassList />)}
-          </Route>{" "}
+          </Route>
           <Route exact path="/class">
             {requireAuth(<ClassList />)}
           </Route>
+          <Route exact path="/class/create">
+            {requireAuth(<CreateClass />)}
+          </Route>
           <Route exact path="/class/:id">
             {requireAuth(<ClassInfo />)}
-          </Route>{" "}
+          </Route>
           <Route exact path="/lesson/:id">
             {requireAuth(<LessonInfo />)}
-          </Route>{" "}
+          </Route>
           <Route exact path="/conference/:id">
             {requireAuth(<ConferencePlayer />)}
           </Route>

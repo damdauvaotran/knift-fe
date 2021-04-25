@@ -66,14 +66,23 @@ const ClassList: FC = () => {
   const redirectToClass = (classId: string) => {
     history.push(`/class/${classId}`);
   };
+
+  const redirectToCreateClass = () => {
+    history.push(`/class/create`);
+  };
+
   return (
     <div>
       <div className="create-wrapper">
-        <Button type="primary" icon={<PlusOutlined />}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={redirectToCreateClass}
+        >
           {t("page.class.createClass")}
         </Button>
       </div>
-      <Table rowKey="classId" columns={columns} dataSource={classList}></Table>
+      <Table rowKey="classId" columns={columns} dataSource={classList} />
     </div>
   );
 };

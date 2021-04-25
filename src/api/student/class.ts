@@ -5,6 +5,7 @@ export interface ICreateClass {
   detail: string;
   startTime: number;
   endTime: number;
+  subjectId: number;
 }
 
 export interface IUpdateClass {
