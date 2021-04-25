@@ -21,6 +21,7 @@ import ClassList from "./pages/class";
 import ClassInfo from "./pages/classInfo";
 import LessonInfo from "./pages/lessonInfo";
 import CreateClass from "./pages/createClass";
+import CreateLesson from "./pages/createLesson";
 // import SubjectManager from "./pages/admin/subject";
 // import RoomManager from "./pages/admin/room";
 // import ShiftManager from "./pages/admin/shift";
@@ -46,7 +47,7 @@ i18n
 function App() {
   return (
     <div className="App">
-      <Router forceRefresh>
+      <Router>
         <Switch>
           <Route exact path="/">
             {requireAuth(<ClassList />)}
@@ -56,6 +57,9 @@ function App() {
           </Route>
           <Route exact path="/class/create">
             {requireAuth(<CreateClass />)}
+          </Route>
+          <Route exact path="/class/:classId/lesson/create">
+            {requireAuth(<CreateLesson />)}
           </Route>
           <Route exact path="/class/:id">
             {requireAuth(<ClassInfo />)}

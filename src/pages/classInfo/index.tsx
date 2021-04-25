@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { getAllLessonByClassId } from "../../api/student/lesson";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../utils/time";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -14,9 +15,9 @@ const ClassInfo: FC = () => {
   const history = useHistory();
   const { t } = useTranslation();
   // @ts-ignore
-  const { id } = useParams();
+  const { id: classId } = useParams();
   useEffect(() => {
-    getAllLessonByClassId(id).then((data: any) => {
+    getAllLessonByClassId(classId).then((data: any) => {
       console.log(data);
       if (data?.success) {
         setLessonList(data.data.lessons);
@@ -72,15 +73,22 @@ const ClassInfo: FC = () => {
     history.push(`/lesson/${lessonId}`);
   };
 
+  const redirectToCreateLesson = () => {
+    history.push(`/class/${classId}/lesson/create`);
+  };
+
   return (
     <div>
-      <Table
-        rowKey="lessonId"
-        columns={columns}
-        dataSource={lessonList}
-      ></Table>
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={redirectToCreateLesson}
+      >
+        {t("page.class.createClass")}
+      </Button>
+      <Table rowKey="lessonId" columns={columns} dataSource={lessonList} />
     </div>
   );
 };
 
-export default withLayout("1")(ClassInfo);
+export default withLayout("Thông tin lớp học")(ClassInfo);
