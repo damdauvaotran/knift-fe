@@ -16,6 +16,9 @@
   "lessonName": "Tên buổi học",
   "createClassSuccess": "Tạo lớp thành công",
   "createLessonSuccess": "Tạo buổi học thành công",
+  "createConferenceSuccess": "Tạo buổi họp thành công",
+  "createConference": "Tạo buổi họp trực tuyến",
+  "status": "Trạng thái",
   "page": {
     "login": {
       "title": "Đăng nhập",

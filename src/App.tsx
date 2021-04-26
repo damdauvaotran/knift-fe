@@ -22,6 +22,7 @@ import ClassInfo from "./pages/classInfo";
 import LessonInfo from "./pages/lessonInfo";
 import CreateClass from "./pages/createClass";
 import CreateLesson from "./pages/createLesson";
+import CreateConference from "./pages/createConference";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -54,6 +55,9 @@ function App() {
           </Route>
           <Route exact path="/class/:classId/lesson/create">
             {requireAuth(<CreateLesson />)}
+          </Route>
+          <Route exact path="/lesson/:lessonId/conference/create">
+            {requireAuth(<CreateConference />)}
           </Route>
           <Route exact path="/class/:id">
             {requireAuth(<ClassInfo />)}

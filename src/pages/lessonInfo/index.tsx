@@ -7,6 +7,7 @@ import { getAllConferenceWithLessonId } from "../../api/student/conference";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/time";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -26,7 +27,7 @@ const LessonInfo: FC = () => {
   }, []);
   const columns = [
     {
-      title: "s",
+      title: "STT",
       dataIndex: "conferenceId",
       key: "id",
     },
@@ -69,15 +70,24 @@ const LessonInfo: FC = () => {
     history.push(`/conference/${conferenceId}`);
   };
 
+  const redirectToCreateConference = () => {
+    history.push(`/lesson/${id}/conference/create`);
+  };
+
   return (
     <div>
-      <Table
-        rowKey="conferenceId"
-        columns={columns}
-        dataSource={confList}
-      ></Table>
+      <div className="create-wrapper">
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={redirectToCreateConference}
+        >
+          {t("createConference")}
+        </Button>
+      </div>
+      <Table rowKey="conferenceId" columns={columns} dataSource={confList} />
     </div>
   );
 };
 
-export default withLayout("1")(LessonInfo);
+export default withLayout("Các buổi gặp mặt trực tuyến")(LessonInfo);
