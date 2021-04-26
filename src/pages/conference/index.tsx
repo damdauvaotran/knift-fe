@@ -169,20 +169,22 @@ const Conference: React.FC = () => {
           height={240}
         />
       </div>
-      <div id="remote">
-        {remoteStreamList.map((consumerId: string) => {
-          return (
-            <Video
-              // @ts-ignore
+      <div className="remote-wrapper">
+        <div className="remote">
+          {remoteStreamList.map((consumerId: string) => {
+            return (
+              <Video
+                // @ts-ignore
 
-              className={`${consumerId}`}
-              key={`remote_${consumerId}`}
-              srcObject={remoteStreamListRef.current.get(consumerId)}
-              autoPlay
-              playsInline
-            />
-          );
-        })}
+                className="remote-video"
+                key={`remote_${consumerId}`}
+                srcObject={remoteStreamListRef.current.get(consumerId)}
+                autoPlay
+                playsInline
+              />
+            );
+          })}
+        </div>
       </div>
       <div className="conf-util">
         <Button

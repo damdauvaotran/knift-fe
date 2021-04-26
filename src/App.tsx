@@ -1,18 +1,11 @@
-import React from "react";
-import {
-  Router,
-  Switch,
-  Route,
-  Redirect,
-  BrowserRouter,
-} from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route, Redirect, BrowserRouter } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { createBrowserHistory } from "history";
 import "./App.scss";
 import "antd/dist/antd.css";
 
-import { isLogin } from "./utils/auth";
+import { getUserToken, isLogin } from "./utils/auth";
 import translationVI from "./locales/vi.json";
 
 import Login from "./pages/login";
@@ -25,8 +18,8 @@ import CreateClass from "./pages/createClass";
 import CreateLesson from "./pages/createLesson";
 import CreateConference from "./pages/createConference";
 
-import { store } from "./redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAction, logoutAction } from "./redux/action/authAction";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -43,10 +36,17 @@ i18n
     },
   });
 
-const customHistory = createBrowserHistory();
-
 const App = () => {
   const isLoginSelector = useSelector((state: any) => state.isLogin);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isLogin()) {
+      const token = getUserToken();
+      dispatch(loginAction(token ?? ""));
+    } else {
+      dispatch(logoutAction());
+    }
+  }, []);
 
   const requireAuth = (component: any) => {
     if (isLoginSelector) {

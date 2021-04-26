@@ -30,7 +30,7 @@ export const register = ({
   email,
 }: IRegisterReq) => {
   return postRequest({
-    url: "/auth/register",
+    url: "/auth/signup",
     data: {
       username,
       password,

@@ -6,9 +6,22 @@
     position: absolute;
     left: 10px;
   }
+  .remote-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .remote {
+      display: grid;
+      grid-template-columns: 320px 320px 320px 320px;
+      grid-template-rows: 240px 240px 240px 240px;
+      grid-gap: 10px 10px;
+      align-content: center;
 
-  .remote-cam-wrapper {
-
+      .remote-video {
+        width: 320px;
+        height: 240px;
+      }
+    }
   }
   .conf-util{
     display: flex;

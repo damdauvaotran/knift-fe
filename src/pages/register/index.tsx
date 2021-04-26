@@ -5,23 +5,26 @@ import Icon from "@ant-design/icons";
 import "./style.scss";
 
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 
 const Register: React.FC = () => {
   const [form] = Form.useForm();
   const { t } = useTranslation();
+  const history = useHistory();
 
   const handleSubmit = async (values: any) => {
     try {
       const res = await register({
         username: values.username,
         password: values.password,
-        displayName: "a",
+        displayName: values.name,
         gender: "MALE",
         email: "a@gmail.com",
       });
       console.log("res", res);
       if (res.success) {
         message.success("Đăng ký thành công");
+        history.push("/login");
       } else {
         message.error(res.message);
       }

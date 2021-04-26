@@ -1,6 +1,6 @@
 import { authType, IAction } from "../types";
 
-const initialState = { token: "", isLogin: false };
+const initialState = { token: "", isLogin: true };
 
 const authReducer = (state = initialState, action: IAction) => {
   switch (action.type) {
