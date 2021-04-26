@@ -1,13 +1,14 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route,
   Redirect,
+  BrowserRouter,
 } from "react-router-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
+import { createBrowserHistory } from "history";
 import "./App.scss";
 import "antd/dist/antd.css";
 
@@ -24,6 +25,9 @@ import CreateClass from "./pages/createClass";
 import CreateLesson from "./pages/createLesson";
 import CreateConference from "./pages/createConference";
 
+import { store } from "./redux/store";
+import { useSelector } from "react-redux";
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -39,10 +43,41 @@ i18n
     },
   });
 
-function App() {
+const customHistory = createBrowserHistory();
+
+const App = () => {
+  const isLoginSelector = useSelector((state: any) => state.isLogin);
+
+  console.log(isLoginSelector);
+  const requireAuth = (component: any) => {
+    if (isLoginSelector) {
+      return component;
+    }
+    return (
+      <Redirect
+        to={{
+          pathname: "/login",
+        }}
+      />
+    );
+  };
+
+  const requireNotAuth = (component: any) => {
+    if (!isLoginSelector) {
+      return component;
+    }
+    return (
+      <Redirect
+        to={{
+          pathname: "/",
+        }}
+      />
+    );
+  };
+
   return (
     <div className="App">
-      <Router>
+      <BrowserRouter>
         <Switch>
           <Route exact path="/">
             {requireAuth(<ClassList />)}
@@ -69,47 +104,11 @@ function App() {
             {requireAuth(<ConferencePlayer />)}
           </Route>
           <Route path="/login">{requireNotAuth(<Login />)}</Route>
-          {/*<Route path="/admin/subject">{requireAuth(<SubjectManager />)}</Route>*/}
-          {/*<Route path="/admin/room">{requireAuth(<RoomManager />)}</Route>*/}
-          {/*<Route path="/admin/shift">{requireAuth(<ShiftManager />)}</Route>*/}
-          {/*<Route path="/admin/student">{requireAuth(<StudentManager />)}</Route>*/}
-          {/*<Route exact path="/admin/semester">*/}
-          {/*  {requireAuth(<SemesterManger />)}*/}
-          {/*</Route>*/}
-          {/*<Route exact path="/admin/semester/:id">*/}
-          {/*  {requireAuth(<ShiftManager />)}*/}
-          {/*</Route>*/}
           <Route path="/register">{requireNotAuth(<Register />)}</Route>
         </Switch>
-      </Router>
+      </BrowserRouter>
     </div>
   );
-}
-
-function requireAuth(component: any) {
-  if (isLogin()) {
-    return component;
-  }
-  return (
-    <Redirect
-      to={{
-        pathname: "/login",
-      }}
-    />
-  );
-}
-
-function requireNotAuth(component: any) {
-  if (!isLogin()) {
-    return component;
-  }
-  return (
-    <Redirect
-      to={{
-        pathname: "/",
-      }}
-    />
-  );
-}
+};
 
 export default App;

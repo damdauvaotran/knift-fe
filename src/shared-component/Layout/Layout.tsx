@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import { Layout, Menu, Button, Typography, Card } from "antd";
 import Icon from "@ant-design/icons";
 import "./layout.scss";
 
 import { getUserData, clearUserToken } from "../../utils/auth";
 import menu from "./menu";
+import { useDispatch } from "react-redux";
+import { logoutAction } from "../../redux/action/authAction";
 
 const { SubMenu } = Menu;
 
@@ -21,15 +23,19 @@ export const withLayout = (selectedKey: any) => (WrappedComponent: any) => (
 ) => {
   const [collapsed, setCollapsed] = useState<boolean>();
   const [isLogout, setIsLogout] = useState<boolean>();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onLogout = () => {
     clearUserToken();
-    setIsLogout(true);
+    dispatch(logoutAction());
+    // setIsLogout(true);
+    history.push("/login");
   };
 
-  if (isLogout) {
-    return <Redirect to="/login" />;
-  }
+  // if (isLogout) {
+  //   // return <Redirect to="/login" />;
+  // }
   const data: any = getUserData();
 
   return (

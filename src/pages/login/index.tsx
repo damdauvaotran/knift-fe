@@ -9,12 +9,16 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 
 import { getUserData } from "../../utils/auth";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../../redux/action/authAction";
 
 const Login: React.FC = () => {
   const [isLoginSuccess, setIsLoginSuccess] = useState<boolean>(false);
   const [form] = Form.useForm();
   const { t } = useTranslation();
   const history = useHistory();
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values: any) => {
     const res = await login({
@@ -24,12 +28,10 @@ const Login: React.FC = () => {
     if (res.success) {
       message.success("Đăng nhập thành công");
       cookies.set("kniftToken", res.data.token, { expires: 3 });
-      const r = getUserData();
-      console.log(r);
-
-      history.push("/");
 
       setIsLoginSuccess(true);
+      dispatch(loginAction(res.data.token));
+      history.push("/");
     } else {
       message.error(res.message);
     }
