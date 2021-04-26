@@ -90,8 +90,9 @@ const Conference: React.FC = () => {
 
   useEffect(() => {
     if (conferenceRoomRef.current) {
+      const { id } = getUserData();
       conferenceRoomRef.current?.closeProducer("videoType");
-      conferenceRoomRef.current.produce("videoType", localStream);
+      conferenceRoomRef.current.produce("videoType", localStream, id);
     }
   }, [localStream]);
 
@@ -152,7 +153,8 @@ const Conference: React.FC = () => {
 
     conferenceRoomRef.current = a;
     await a.init();
-    await a.produce("videoType", stream);
+    const { id } = getUserData();
+    await a.produce("videoType", stream, id);
   };
 
   return (

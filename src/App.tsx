@@ -22,12 +22,6 @@ import ClassInfo from "./pages/classInfo";
 import LessonInfo from "./pages/lessonInfo";
 import CreateClass from "./pages/createClass";
 import CreateLesson from "./pages/createLesson";
-// import SubjectManager from "./pages/admin/subject";
-// import RoomManager from "./pages/admin/room";
-// import ShiftManager from "./pages/admin/shift";
-// import StudentManager from "./pages/admin/student";
-// import SemesterManger from "./pages/admin/semester";
-import "./assets/font/Roboto-Regular.ttf";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next

@@ -14,8 +14,8 @@
   "createClass": "Tạo lớp học",
   "subject": "Môn học",
   "lessonName": "Tên buổi học",
-  "createClassSuccess": "Tao lớp thành công",
-  "createLessonSuccess": "Tao buổi học thành công",
+  "createClassSuccess": "Tạo lớp thành công",
+  "createLessonSuccess": "Tạo buổi học thành công",
   "page": {
     "login": {
       "title": "Đăng nhập",

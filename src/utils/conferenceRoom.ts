@@ -236,7 +236,7 @@ export class ConferenceRoom {
     this.consumers.delete(consumerId);
   }
 
-  async produce(type: string, stream: MediaStream) {
+  async produce(type: string, stream: MediaStream, sourceId: number) {
     let audio = false;
     let screen = false;
 
@@ -276,6 +276,7 @@ export class ConferenceRoom {
       }
       // @ts-ignore
       const producer = await this.producerTransport.produce(params);
+      producer.appData.sourceId = sourceId;
 
       console.log("producer", producer, params);
 

@@ -87,4 +87,4 @@ const ClassList: FC = () => {
   );
 };
 
-export default withLayout("1")(ClassList);
+export default withLayout("Danh sách lớp học")(ClassList);
