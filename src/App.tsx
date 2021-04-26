@@ -48,7 +48,6 @@ const customHistory = createBrowserHistory();
 const App = () => {
   const isLoginSelector = useSelector((state: any) => state.isLogin);
 
-  console.log(isLoginSelector);
   const requireAuth = (component: any) => {
     if (isLoginSelector) {
       return component;
