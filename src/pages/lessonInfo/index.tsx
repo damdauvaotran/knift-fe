@@ -2,12 +2,19 @@ import { FC, useEffect, useState } from "react";
 import { Table, Button, Typography } from "antd";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory, useParams } from "react-router-dom";
-
-import { getAllConferenceWithLessonId } from "../../api/student/conference";
+import { saveAs } from "file-saver";
+import {
+  getAllConferenceWithLessonId,
+  getAttendanceList,
+} from "../../api/student/conference";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/time";
-import { PlusOutlined } from "@ant-design/icons";
+import {
+  DownloadOutlined,
+  FundProjectionScreenOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -53,15 +60,41 @@ const LessonInfo: FC = () => {
       key: "action",
       dataIndex: "conferenceId",
       render: (text: string, record: any) => (
-        <Button
-          size="middle"
-          type="primary"
-          onClick={() => {
-            redirectToConferencePlayer(text);
-          }}
-        >
-          {t("join")}
-        </Button>
+        <div>
+          <Button
+            size="middle"
+            type="primary"
+            onClick={() => {
+              redirectToConferencePlayer(text);
+            }}
+            icon={<FundProjectionScreenOutlined />}
+            className="util-button"
+          >
+            {t("join")}
+          </Button>
+          <Button
+            size="middle"
+            type="primary"
+            onClick={async () => {
+              const res = await downloadAttendanceList(text);
+              console.log(typeof res.data);
+              const dirtyFileName = res.headers["content-disposition"];
+              const regex = /filename[^;=\n]*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/;
+              const fileName = dirtyFileName.match(regex)[2];
+              console.log(fileName);
+              const blob = new Blob([res.data], {
+                type:
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              });
+              saveAs(blob, fileName);
+            }}
+            className="util-button"
+            download
+            icon={<DownloadOutlined />}
+          >
+            {t("attendanceList")}
+          </Button>
+        </div>
       ),
     },
   ];
@@ -72,6 +105,10 @@ const LessonInfo: FC = () => {
 
   const redirectToCreateConference = () => {
     history.push(`/lesson/${id}/conference/create`);
+  };
+
+  const downloadAttendanceList = async (conferenceId: string) => {
+    return await getAttendanceList(conferenceId);
   };
 
   return (

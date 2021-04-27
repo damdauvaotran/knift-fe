@@ -22,6 +22,7 @@
   "deleteSuccess": "Xóa thành công",
   "areYouSureToDelete": "Bạn có chắc muốn xóa",
   "status": "Trạng thái",
+  "attendanceList": "Danh sách điểm danh",
   "page": {
     "login": {
       "title": "Đăng nhập",

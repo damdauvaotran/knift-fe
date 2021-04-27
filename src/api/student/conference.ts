@@ -1,4 +1,9 @@
-import { deleteAuthRequest, getAuthRequest, postAuthRequest } from "../common";
+import {
+  deleteAuthRequest,
+  getAuthRequest,
+  postAuthRequest,
+  getAuthRequestWithHeader,
+} from "../common";
 
 export interface ICreateConference {
   lessonId: any;
@@ -30,7 +35,8 @@ export const deleteConference = (conferenceId: any) => {
 };
 
 export const getAttendanceList = (conferenceId: any) => {
-  return getAuthRequest({
+  return getAuthRequestWithHeader({
     url: `/conference/${conferenceId}/attendance`,
+    responseType: "blob",
   });
 };
