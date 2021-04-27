@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button, Typography } from "antd";
+import { Table, Button, Typography, Popconfirm, notification } from "antd";
 import { useParams } from "react-router-dom";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
-import { getAllLessonByClassId } from "../../api/student/lesson";
+import { deleteLesson, getAllLessonByClassId } from "../../api/student/lesson";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../utils/time";
-import { PlusOutlined } from "@ant-design/icons";
-
+import { DeleteOutlined, FormOutlined, PlusOutlined } from "@ant-design/icons";
+import "./classInfo.scss";
 const { Text } = Typography;
 
 const ClassInfo: FC = () => {
@@ -17,13 +17,17 @@ const ClassInfo: FC = () => {
   // @ts-ignore
   const { id: classId } = useParams();
   useEffect(() => {
+    fetchLesson();
+  }, []);
+
+  const fetchLesson = () => {
     getAllLessonByClassId(classId).then((data: any) => {
       console.log(data);
       if (data?.success) {
         setLessonList(data.data.lessons);
       }
     });
-  }, []);
+  };
   const columns = [
     {
       title: t("name"),
@@ -56,15 +60,42 @@ const ClassInfo: FC = () => {
       key: "action",
       dataIndex: "classId",
       render: (text: string, record: any) => (
-        <Button
-          size="middle"
-          type="primary"
-          onClick={() => {
-            redirectToLesson(text);
-          }}
-        >
-          Go
-        </Button>
+        <div>
+          <Button
+            size="middle"
+            type="primary"
+            onClick={() => {
+              redirectToLesson(text);
+            }}
+          >
+            Go
+          </Button>
+          <Button
+            size="middle"
+            type="primary"
+            className="util-button"
+            shape="circle"
+            icon={<FormOutlined />}
+            onClick={() => {
+              redirectToEditLesson(text);
+            }}
+          />
+          <Popconfirm
+            title={t("areYouSureToDelete")}
+            onConfirm={() => deleteLessonAndFetch(text)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              size="middle"
+              type="primary"
+              danger
+              icon={<DeleteOutlined />}
+              className="util-button"
+              shape="circle"
+            />
+          </Popconfirm>
+        </div>
       ),
     },
   ];
@@ -77,16 +108,33 @@ const ClassInfo: FC = () => {
     history.push(`/class/${classId}/lesson/create`);
   };
 
+  const redirectToEditLesson = (lessonId: string) => {
+    history.push(`/lesson/${lessonId}/edit`);
+  };
+
+  const deleteLessonAndFetch = async (lessonId: string) => {
+    const res = await deleteLesson(lessonId);
+    if (res?.success) {
+      notification.success({ message: t("deleteSuccess") });
+      fetchLesson();
+    }
+  };
+
   return (
     <div>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={redirectToCreateLesson}
-      >
-        {t("page.class.createClass")}
-      </Button>
-      <Table rowKey="lessonId" columns={columns} dataSource={lessonList} />
+      <div className="create-wrapper">
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={redirectToCreateLesson}
+        >
+          {t("createLesson")}
+        </Button>
+      </div>
+
+      <div>
+        <Table rowKey="lessonId" columns={columns} dataSource={lessonList} />
+      </div>
     </div>
   );
 };

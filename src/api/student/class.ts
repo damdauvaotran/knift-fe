@@ -1,4 +1,9 @@
-import { getAuthRequest, postAuthRequest, putAuthRequest } from "../common";
+import {
+  deleteAuthRequest,
+  getAuthRequest,
+  postAuthRequest,
+  putAuthRequest,
+} from "../common";
 
 export interface ICreateClass {
   name: string;
@@ -31,5 +36,11 @@ export const updateClass = (classId: any, classInfo: IUpdateClass) => {
   return putAuthRequest({
     url: `/class/${classId}`,
     data: classInfo,
+  });
+};
+
+export const deleteClass = (classId: any) => {
+  return deleteAuthRequest({
+    url: `/class/${classId}`,
   });
 };

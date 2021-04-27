@@ -52,7 +52,6 @@ export class ConferenceRoom {
       roomId,
     });
 
-    console.log(e);
     const data = await this.socketRequest("getRouterRtpCapabilities");
     let device = await this.loadDevice(
       data as mediaSoupClient.types.RtpCapabilities

@@ -1,11 +1,16 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button, Typography } from "antd";
-import { getAllClass } from "../../api/student/class";
+import { Table, Button, Typography, Popconfirm, notification } from "antd";
+import { deleteClass, getAllClass } from "../../api/student/class";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./class.scss";
-import { PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  FormOutlined,
+  InfoCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { formatDate } from "../../utils/time";
 
 const { Text } = Typography;
@@ -15,13 +20,17 @@ const ClassList: FC = () => {
 
   const { t } = useTranslation();
   useEffect(() => {
+    fetchClass();
+  }, []);
+
+  const fetchClass = () => {
     getAllClass().then((data: any) => {
       console.log(data);
       if (data?.success) {
         setClassList(data.data.classes);
       }
     });
-  }, []);
+  };
   const columns = [
     {
       title: t("page.class.title"),
@@ -50,15 +59,43 @@ const ClassList: FC = () => {
       key: "action",
       dataIndex: "classId",
       render: (text: string, record: any) => (
-        <Button
-          size="middle"
-          type="primary"
-          onClick={() => {
-            redirectToClass(text);
-          }}
-        >
-          {t("detail")}
-        </Button>
+        <div>
+          <Button
+            size="middle"
+            type="primary"
+            className="util-button"
+            shape="circle"
+            icon={<InfoCircleOutlined />}
+            onClick={() => {
+              redirectToClass(text);
+            }}
+          />
+          <Button
+            size="middle"
+            type="primary"
+            className="util-button"
+            shape="circle"
+            icon={<FormOutlined />}
+            onClick={() => {
+              redirectToEditClass(text);
+            }}
+          />
+          <Popconfirm
+            title={t("areYouSureToDelete")}
+            onConfirm={() => deleteClassRoom(text)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              size="middle"
+              type="primary"
+              danger
+              icon={<DeleteOutlined />}
+              className="util-button"
+              shape="circle"
+            />
+          </Popconfirm>
+        </div>
       ),
     },
   ];
@@ -69,6 +106,19 @@ const ClassList: FC = () => {
 
   const redirectToCreateClass = () => {
     history.push(`/class/create`);
+  };
+
+  const redirectToEditClass = (classId: string) => {
+    history.push(`/class/${classId}/edit`);
+  };
+
+  const deleteClassRoom = async (text: string) => {
+    const res = await deleteClass(text);
+    console.log(res);
+    if (res?.success) {
+      notification.success({ message: t("deleteSuccess") });
+      fetchClass();
+    }
   };
 
   return (

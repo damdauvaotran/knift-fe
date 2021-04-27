@@ -1,4 +1,4 @@
-import { getAuthRequest, postAuthRequest } from "../common";
+import { deleteAuthRequest, getAuthRequest, postAuthRequest } from "../common";
 
 export interface ICreateConference {
   lessonId: any;
@@ -20,5 +20,17 @@ export const createConference = (conferenceInfo: ICreateConference) => {
   return postAuthRequest({
     url: "/conference",
     data: conferenceInfo,
+  });
+};
+
+export const deleteConference = (conferenceId: any) => {
+  return deleteAuthRequest({
+    url: `/conference/${conferenceId}`,
+  });
+};
+
+export const getAttendanceList = (conferenceId: any) => {
+  return getAuthRequest({
+    url: `/conference/${conferenceId}/attendance`,
   });
 };

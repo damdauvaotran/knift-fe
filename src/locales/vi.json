@@ -12,12 +12,15 @@
   "name": "Tên",
   "className": "Tên lớp học",
   "createClass": "Tạo lớp học",
+  "createLesson": "Tạo buổi học",
   "subject": "Môn học",
   "lessonName": "Tên buổi học",
   "createClassSuccess": "Tạo lớp thành công",
   "createLessonSuccess": "Tạo buổi học thành công",
   "createConferenceSuccess": "Tạo buổi họp thành công",
   "createConference": "Tạo buổi họp trực tuyến",
+  "deleteSuccess": "Xóa thành công",
+  "areYouSureToDelete": "Bạn có chắc muốn xóa",
   "status": "Trạng thái",
   "page": {
     "login": {

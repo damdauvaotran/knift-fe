@@ -1,4 +1,9 @@
-import { getAuthRequest, postAuthRequest, putAuthRequest } from "../common";
+import {
+  deleteAuthRequest,
+  getAuthRequest,
+  postAuthRequest,
+  putAuthRequest,
+} from "../common";
 
 export interface ICreateLesson {
   name: string;
@@ -36,5 +41,11 @@ export const updateLesson = (lessonId: any, lessonInfo: IUpdateLesson) => {
   return putAuthRequest({
     url: `/lesson/${lessonId}`,
     data: lessonInfo,
+  });
+};
+
+export const deleteLesson = (lessonId: any) => {
+  return deleteAuthRequest({
+    url: `/lesson/${lessonId}`,
   });
 };
