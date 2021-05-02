@@ -24,7 +24,7 @@
   "status": "Trạng thái",
   "attendanceList": "Danh sách điểm danh",
   "createInvitation": "Tạo lời mời",
-  "joinClassText": "Bạn có muốn tham gia lớp {{className}} của {{teacherName}}",
+  "joinClassText": "Bạn nhân được lời mời tham gia lớp {{className}} của {{teacherName}}",
   "page": {
     "login": {
       "title": "Đăng nhập",

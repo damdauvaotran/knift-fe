@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Modal, Form, Typography } from "antd";
-import { getInvitationInfo } from "../../api/invitation";
+import { Modal, Form, Typography, notification } from "antd";
+import { getInvitationInfo, acceptInvitation } from "../../api/invitation";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useTranslation } from "react-i18next";
 
@@ -16,17 +16,36 @@ const Invitation = () => {
   // @ts-ignore
   const { invitation } = useParams();
   const { t } = useTranslation();
+  const history = useHistory();
+
   useEffect(() => {
     getInvitationInfo(invitation).then((res: any) => {
-      console.log(res);
-      setVisible(true);
+      if (res?.success) {
+        setVisible(true);
+        const { invitation } = res.data;
+        console.log(invitation);
+        setClassName(invitation.className);
+        setTeacherName(invitation.teacherName);
+      }
     });
   }, []);
 
-  const handleAccept = () => {};
+  const handleAccept = async () => {
+    const res = await acceptInvitation(invitation);
+    if (res.success) {
+      history.push("/class");
+    } else {
+      notification.error({ message: res.message });
+      history.push("/class");
+    }
+  };
+
+  const handleDecline = async () => {
+    history.push("/class");
+  };
   return (
     <div>
-      <Modal visible={visible} onOk={handleAccept}>
+      <Modal visible={visible} onOk={handleAccept} onCancel={handleDecline}>
         <Text>
           {t("joinClassText", {
             className: className,
