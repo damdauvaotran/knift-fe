@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { Player } from "video-react";
 import {
   AudioMutedOutlined,
+  AudioOutlined,
   DesktopOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
@@ -29,7 +30,7 @@ const Conference: React.FC = () => {
   );
   const [yourID, setYourID] = useState<number>();
   const [users, setUsers] = useState({});
-  const [stream, setStream] = useState();
+  const [muted, setMuted] = useState<boolean>(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
@@ -157,9 +158,14 @@ const Conference: React.FC = () => {
     await a.produce("videoType", stream, id);
   };
 
+  const toggleMute = () => {
+    setMuted(!muted);
+  };
+
   return (
     <div className="conf-wrapper">
-      <div className="local-cam-wrapper">
+      <div className="local-cam-wrapper"></div>
+      <div className="remote-wrapper">
         <Video
           // @ts-ignore
           srcObject={localStream}
@@ -168,8 +174,6 @@ const Conference: React.FC = () => {
           width={320}
           height={240}
         />
-      </div>
-      <div className="remote-wrapper">
         <div className="remote">
           {remoteStreamList.map((consumerId: string) => {
             return (
@@ -191,7 +195,8 @@ const Conference: React.FC = () => {
           type="primary"
           size="large"
           shape="circle"
-          icon={<AudioMutedOutlined />}
+          icon={muted ? <AudioMutedOutlined /> : <AudioOutlined />}
+          onClick={toggleMute}
         />
         <Button
           type="primary"
