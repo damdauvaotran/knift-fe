@@ -6,7 +6,7 @@ import { saveAs } from "file-saver";
 import {
   getAllConferenceWithLessonId,
   getAttendanceList,
-} from "../../api/student/conference";
+} from "../../api/conference";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { formatDate } from "../../utils/time";

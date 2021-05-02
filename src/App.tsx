@@ -17,6 +17,7 @@ import LessonInfo from "./pages/lessonInfo";
 import CreateClass from "./pages/createClass";
 import CreateLesson from "./pages/createLesson";
 import CreateConference from "./pages/createConference";
+import Invitation from "./pages/invitation";
 
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction, logoutAction } from "./redux/action/authAction";
@@ -101,6 +102,9 @@ const App = () => {
           </Route>
           <Route exact path="/conference/:id">
             {requireAuth(<ConferencePlayer />)}
+          </Route>
+          <Route exact path="/invitation/:invitation">
+            {requireAuth(<Invitation />)}
           </Route>
           <Route path="/login">{requireNotAuth(<Login />)}</Route>
           <Route path="/register">{requireNotAuth(<Register />)}</Route>

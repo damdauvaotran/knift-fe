@@ -13,11 +13,8 @@ import {
 } from "antd";
 import { useTranslation } from "react-i18next";
 import { withLayout } from "../../shared-component/Layout/Layout";
-import { getAllSubject } from "../../api/student/subject";
-import {
-  ICreateConference,
-  createConference,
-} from "../../api/student/conference";
+import { getAllSubject } from "../../api/subject";
+import { ICreateConference, createConference } from "../../api/conference";
 import moment from "moment";
 import { useHistory, useParams } from "react-router-dom";
 

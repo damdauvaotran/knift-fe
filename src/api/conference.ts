@@ -3,7 +3,7 @@ import {
   getAuthRequest,
   postAuthRequest,
   getAuthRequestWithHeader,
-} from "../common";
+} from "./common";
 
 export interface ICreateConference {
   lessonId: any;

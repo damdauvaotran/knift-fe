@@ -3,15 +3,22 @@ import { Table, Button, Typography, Popconfirm, notification } from "antd";
 import { useParams } from "react-router-dom";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
-import { deleteLesson, getAllLessonByClassId } from "../../api/student/lesson";
+import { deleteLesson, getAllLessonByClassId } from "../../api/lesson";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../utils/time";
-import { DeleteOutlined, FormOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  FormOutlined,
+  MailOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import "./classInfo.scss";
+import CreateInvitation from "./createInvitationModel";
 const { Text } = Typography;
 
 const ClassInfo: FC = () => {
   const [lessonList, setLessonList] = useState<any[]>([]);
+  const [invitationVisible, setInvitationVisible] = useState<boolean>(false);
   const history = useHistory();
   const { t } = useTranslation();
   // @ts-ignore
@@ -120,13 +127,21 @@ const ClassInfo: FC = () => {
     }
   };
 
+  const createInvitation = () => {};
+
   return (
-    <div>
+    <div id="class-info">
       <div className="create-wrapper">
+        <CreateInvitation
+          visible={invitationVisible}
+          setVisible={setInvitationVisible}
+          classId={classId}
+        />
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={redirectToCreateLesson}
+          className="function-button"
         >
           {t("createLesson")}
         </Button>

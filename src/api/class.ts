@@ -3,7 +3,7 @@ import {
   getAuthRequest,
   postAuthRequest,
   putAuthRequest,
-} from "../common";
+} from "./common";
 
 export interface ICreateClass {
   name: string;

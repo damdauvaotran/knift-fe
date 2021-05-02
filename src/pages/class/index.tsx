@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Table, Button, Typography, Popconfirm, notification } from "antd";
-import { deleteClass, getAllClass } from "../../api/student/class";
+import { deleteClass, getAllClass } from "../../api/class";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";

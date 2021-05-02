@@ -23,6 +23,8 @@
   "areYouSureToDelete": "Bạn có chắc muốn xóa",
   "status": "Trạng thái",
   "attendanceList": "Danh sách điểm danh",
+  "createInvitation": "Tạo lời mời",
+  "joinClassText": "Bạn có muốn tham gia lớp {{className}} của {{teacherName}}",
   "page": {
     "login": {
       "title": "Đăng nhập",
