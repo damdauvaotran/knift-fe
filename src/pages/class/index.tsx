@@ -12,11 +12,15 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { formatDate } from "../../utils/time";
+import { getUserData } from "../../utils/auth";
+import { ROLE } from "../../constant";
 
 const { Text } = Typography;
 const ClassList: FC = () => {
   const [classList, setClassList] = useState<any[]>([]);
   const history = useHistory();
+
+  const { role } = getUserData();
 
   const { t } = useTranslation();
   useEffect(() => {
@@ -70,31 +74,35 @@ const ClassList: FC = () => {
               redirectToClass(text);
             }}
           />
-          <Button
-            size="middle"
-            type="primary"
-            className="util-button"
-            shape="circle"
-            icon={<FormOutlined />}
-            onClick={() => {
-              redirectToEditClass(text);
-            }}
-          />
-          <Popconfirm
-            title={t("areYouSureToDelete")}
-            onConfirm={() => deleteClassRoom(text)}
-            okText="Yes"
-            cancelText="No"
-          >
+          {role === ROLE.teacher && (
             <Button
               size="middle"
               type="primary"
-              danger
-              icon={<DeleteOutlined />}
               className="util-button"
               shape="circle"
+              icon={<FormOutlined />}
+              onClick={() => {
+                redirectToEditClass(text);
+              }}
             />
-          </Popconfirm>
+          )}
+          {role === ROLE.teacher && (
+            <Popconfirm
+              title={t("areYouSureToDelete")}
+              onConfirm={() => deleteClassRoom(text)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                size="middle"
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                className="util-button"
+                shape="circle"
+              />
+            </Popconfirm>
+          )}
         </div>
       ),
     },
@@ -124,13 +132,15 @@ const ClassList: FC = () => {
   return (
     <div>
       <div className="create-wrapper">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={redirectToCreateClass}
-        >
-          {t("page.class.createClass")}
-        </Button>
+        {role === ROLE.teacher && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={redirectToCreateClass}
+          >
+            {t("page.class.createClass")}
+          </Button>
+        )}
       </div>
       <Table rowKey="classId" columns={columns} dataSource={classList} />
     </div>

@@ -14,6 +14,8 @@ import {
 } from "@ant-design/icons";
 import "./classInfo.scss";
 import CreateInvitation from "./createInvitationModel";
+import { ROLE } from "../../constant";
+import { getUserData } from "../../utils/auth";
 const { Text } = Typography;
 
 const ClassInfo: FC = () => {
@@ -23,6 +25,9 @@ const ClassInfo: FC = () => {
   const { t } = useTranslation();
   // @ts-ignore
   const { id: classId } = useParams();
+
+  const { role } = getUserData();
+
   useEffect(() => {
     fetchLesson();
   }, []);
@@ -77,31 +82,35 @@ const ClassInfo: FC = () => {
           >
             Go
           </Button>
-          <Button
-            size="middle"
-            type="primary"
-            className="util-button"
-            shape="circle"
-            icon={<FormOutlined />}
-            onClick={() => {
-              redirectToEditLesson(text);
-            }}
-          />
-          <Popconfirm
-            title={t("areYouSureToDelete")}
-            onConfirm={() => deleteLessonAndFetch(text)}
-            okText="Yes"
-            cancelText="No"
-          >
+          {role === ROLE.teacher && (
             <Button
               size="middle"
               type="primary"
-              danger
-              icon={<DeleteOutlined />}
               className="util-button"
               shape="circle"
+              icon={<FormOutlined />}
+              onClick={() => {
+                redirectToEditLesson(text);
+              }}
             />
-          </Popconfirm>
+          )}
+          {role === ROLE.teacher && (
+            <Popconfirm
+              title={t("areYouSureToDelete")}
+              onConfirm={() => deleteLessonAndFetch(text)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                size="middle"
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                className="util-button"
+                shape="circle"
+              />
+            </Popconfirm>
+          )}
         </div>
       ),
     },
@@ -132,19 +141,24 @@ const ClassInfo: FC = () => {
   return (
     <div id="class-info">
       <div className="create-wrapper">
-        <CreateInvitation
-          visible={invitationVisible}
-          setVisible={setInvitationVisible}
-          classId={classId}
-        />
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={redirectToCreateLesson}
-          className="function-button"
-        >
-          {t("createLesson")}
-        </Button>
+        {role === ROLE.teacher && (
+          <CreateInvitation
+            visible={invitationVisible}
+            setVisible={setInvitationVisible}
+            classId={classId}
+          />
+        )}
+
+        {role === ROLE.teacher && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={redirectToCreateLesson}
+            className="function-button"
+          >
+            {t("createLesson")}
+          </Button>
+        )}
       </div>
 
       <div>

@@ -15,6 +15,8 @@ import {
   FundProjectionScreenOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { ROLE } from "../../constant";
+import { getUserData } from "../../utils/auth";
 
 const { Text } = Typography;
 
@@ -24,6 +26,9 @@ const LessonInfo: FC = () => {
   const { t } = useTranslation();
   // @ts-ignore
   const { id } = useParams();
+
+  const { role } = getUserData();
+
   useEffect(() => {
     getAllConferenceWithLessonId(id).then((data: any) => {
       console.log(data);
@@ -72,28 +77,30 @@ const LessonInfo: FC = () => {
           >
             {t("join")}
           </Button>
-          <Button
-            size="middle"
-            type="primary"
-            onClick={async () => {
-              const res = await downloadAttendanceList(text);
-              console.log(typeof res.data);
-              const dirtyFileName = res.headers["content-disposition"];
-              const regex = /filename[^;=\n]*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/;
-              const fileName = dirtyFileName.match(regex)[2];
-              console.log(fileName);
-              const blob = new Blob([res.data], {
-                type:
-                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-              });
-              saveAs(blob, fileName);
-            }}
-            className="util-button"
-            download
-            icon={<DownloadOutlined />}
-          >
-            {t("attendanceList")}
-          </Button>
+          {role === ROLE.teacher && (
+            <Button
+              size="middle"
+              type="primary"
+              onClick={async () => {
+                const res = await downloadAttendanceList(text);
+                console.log(typeof res.data);
+                const dirtyFileName = res.headers["content-disposition"];
+                const regex = /filename[^;=\n]*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/;
+                const fileName = dirtyFileName.match(regex)[2];
+                console.log(fileName);
+                const blob = new Blob([res.data], {
+                  type:
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                });
+                saveAs(blob, fileName);
+              }}
+              className="util-button"
+              download
+              icon={<DownloadOutlined />}
+            >
+              {t("attendanceList")}
+            </Button>
+          )}
         </div>
       ),
     },
@@ -114,13 +121,15 @@ const LessonInfo: FC = () => {
   return (
     <div>
       <div className="create-wrapper">
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={redirectToCreateConference}
-        >
-          {t("createConference")}
-        </Button>
+        {role === ROLE.teacher && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={redirectToCreateConference}
+          >
+            {t("createConference")}
+          </Button>
+        )}
       </div>
       <Table rowKey="conferenceId" columns={columns} dataSource={confList} />
     </div>
