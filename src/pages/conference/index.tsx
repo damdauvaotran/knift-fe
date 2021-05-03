@@ -158,7 +158,9 @@ const Conference: React.FC = () => {
   };
 
   const toggleMute = () => {
-    localStream.getAudioTracks()[0].enabled = muted;
+    if (localStream.getAudioTracks()[0]) {
+      localStream.getAudioTracks()[0].enabled = muted;
+    }
     setMuted(!muted);
   };
 
