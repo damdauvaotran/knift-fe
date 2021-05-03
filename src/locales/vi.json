@@ -28,6 +28,14 @@
   "joinClassText": "Bạn nhân được lời mời tham gia lớp {{className}} của {{teacherName}}",
   "lesson": "Tiết học",
   "student": "Học sinh",
+  "teacher": "Giáo viên",
+  "fieldIsRequired": "Trường này là bắt buộc",
+  "passwordNotMatch": "Mật khẩu không trùng nhau",
+  "gender": "Giới tính",
+  "male": "Nam",
+  "female": "Nữ",
+  "other": "Khác",
+  "youAre": "Bạn là",
   "page": {
     "login": {
       "title": "Đăng nhập",
@@ -39,7 +47,8 @@
     "register": {
       "title": "Đăng ký",
       "button": {
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "orLogin": "Bạn có tài khoản rồi, hãy"
       }
     },
     "class": {
