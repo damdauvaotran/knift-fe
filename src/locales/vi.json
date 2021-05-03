@@ -20,6 +20,7 @@
   "createConferenceSuccess": "Tạo buổi họp thành công",
   "createConference": "Tạo buổi họp trực tuyến",
   "deleteSuccess": "Xóa thành công",
+  "updateSuccess": "Cập nhật thông tin thành công",
   "areYouSureToDelete": "Bạn có chắc muốn xóa",
   "status": "Trạng thái",
   "attendanceList": "Danh sách điểm danh",

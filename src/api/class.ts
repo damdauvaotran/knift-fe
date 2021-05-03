@@ -18,11 +18,17 @@ export interface IUpdateClass {
   detail: string;
   startTime: number;
   endTime: number;
+  subjectId: number;
 }
 
 export const getAllClass = () =>
   getAuthRequest({
     url: `/class`,
+  });
+
+export const getClassById = (id: any) =>
+  getAuthRequest({
+    url: `/class/${id}`,
   });
 
 export const createClass = (classInfo: ICreateClass) => {

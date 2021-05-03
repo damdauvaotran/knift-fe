@@ -19,7 +19,6 @@ const { Text } = Typography;
 const ClassList: FC = () => {
   const [classList, setClassList] = useState<any[]>([]);
   const history = useHistory();
-
   const { role } = getUserData();
 
   const { t } = useTranslation();
