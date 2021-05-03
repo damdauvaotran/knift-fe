@@ -146,8 +146,7 @@ const Conference: React.FC = () => {
 
   const handleGetUserMedia = async (stream: MediaStream) => {
     const a = new ConferenceRoom(
-      // userId.toString(),
-      Math.random().toString(),
+      userId.toString(),
       conferenceId.toString(),
       socketRef.current
     );
@@ -159,6 +158,7 @@ const Conference: React.FC = () => {
   };
 
   const toggleMute = () => {
+    localStream.getAudioTracks()[0].enabled = muted;
     setMuted(!muted);
   };
 
