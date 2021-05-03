@@ -30,6 +30,11 @@ export const getAllLessonByClassId = (classId: any) =>
     url: `/lesson/class/${classId}`,
   });
 
+export const getLessonById = (lessonId: any) =>
+  getAuthRequest({
+    url: `/lesson/${lessonId}`,
+  });
+
 export const createLesson = (lessonInfo: ICreateLesson) => {
   return postAuthRequest({
     url: "/lesson",

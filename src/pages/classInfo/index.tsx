@@ -70,7 +70,7 @@ const ClassInfo: FC = () => {
     {
       title: t("action"),
       key: "action",
-      dataIndex: "classId",
+      dataIndex: "lessonId",
       render: (text: string, record: any) => (
         <div>
           <Button
@@ -135,8 +135,6 @@ const ClassInfo: FC = () => {
       fetchLesson();
     }
   };
-
-  const createInvitation = () => {};
 
   return (
     <div id="class-info">

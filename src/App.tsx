@@ -19,6 +19,7 @@ import CreateLesson from "./pages/createLesson";
 import CreateConference from "./pages/createConference";
 import Invitation from "./pages/invitation";
 import UpdateClass from "./pages/updateClass";
+import UpdateLesson from "./pages/updateLesson";
 
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction, logoutAction } from "./redux/action/authAction";
@@ -114,6 +115,9 @@ const App = () => {
           </Route>
           <Route exact path="/lesson/:id">
             {requireAuth(<LessonInfo />)}
+          </Route>
+          <Route exact path="/lesson/:id/edit">
+            {requireAuth(<UpdateLesson />, [ROLE.teacher])}
           </Route>
           <Route exact path="/conference/:id">
             {requireAuth(<ConferencePlayer />)}
