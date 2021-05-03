@@ -1,9 +1,20 @@
 import { FC, useEffect, useState } from "react";
-import { Table, Button, Typography, Popconfirm, notification } from "antd";
+import {
+  Table,
+  Button,
+  Typography,
+  Popconfirm,
+  notification,
+  Tabs,
+} from "antd";
 import { useParams } from "react-router-dom";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { useHistory } from "react-router-dom";
 import { deleteLesson, getAllLessonByClassId } from "../../api/lesson";
+import {
+  getAllStudentByClassId,
+  deleteStudentFromClass,
+} from "../../api/student";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "../../utils/time";
 import {
@@ -16,10 +27,13 @@ import "./classInfo.scss";
 import CreateInvitation from "./createInvitationModel";
 import { ROLE } from "../../constant";
 import { getUserData } from "../../utils/auth";
+
+const { TabPane } = Tabs;
 const { Text } = Typography;
 
 const ClassInfo: FC = () => {
   const [lessonList, setLessonList] = useState<any[]>([]);
+  const [studentList, setStudentList] = useState<any[]>([]);
   const [invitationVisible, setInvitationVisible] = useState<boolean>(false);
   const history = useHistory();
   const { t } = useTranslation();
@@ -30,6 +44,7 @@ const ClassInfo: FC = () => {
 
   useEffect(() => {
     fetchLesson();
+    fetchStudent();
   }, []);
 
   const fetchLesson = () => {
@@ -40,7 +55,14 @@ const ClassInfo: FC = () => {
       }
     });
   };
-  const columns = [
+  const fetchStudent = () => {
+    getAllStudentByClassId(classId).then((data: any) => {
+      if (data?.success) {
+        setStudentList(data.data.students);
+      }
+    });
+  };
+  const lessonColumns = [
     {
       title: t("name"),
       dataIndex: "name",
@@ -116,6 +138,45 @@ const ClassInfo: FC = () => {
     },
   ];
 
+  const studentColumns = [
+    {
+      title: t("name"),
+      dataIndex: "displayName",
+      key: "displayName",
+    },
+    {
+      title: t("detail"),
+      dataIndex: "detail",
+      key: "detail",
+    },
+    {
+      title: t("action"),
+      key: "action",
+      dataIndex: "userId",
+      render: (text: string, record: any) => (
+        <div>
+          {role === ROLE.teacher && (
+            <Popconfirm
+              title={t("areYouSureToDelete")}
+              onConfirm={() => deleteStudentAndFetch(text)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                size="middle"
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                className="util-button"
+                shape="circle"
+              />
+            </Popconfirm>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   const redirectToLesson = (lessonId: string) => {
     history.push(`/lesson/${lessonId}`);
   };
@@ -133,6 +194,14 @@ const ClassInfo: FC = () => {
     if (res?.success) {
       notification.success({ message: t("deleteSuccess") });
       fetchLesson();
+    }
+  };
+
+  const deleteStudentAndFetch = async (lessonId: string) => {
+    const res = await deleteStudentFromClass(classId, lessonId);
+    if (res?.success) {
+      notification.success({ message: t("deleteSuccess") });
+      fetchStudent();
     }
   };
 
@@ -160,7 +229,22 @@ const ClassInfo: FC = () => {
       </div>
 
       <div>
-        <Table rowKey="lessonId" columns={columns} dataSource={lessonList} />
+        <Tabs defaultActiveKey="1">
+          <TabPane tab={t("lesson")} key="lesson">
+            <Table
+              rowKey="lessonId"
+              columns={lessonColumns}
+              dataSource={lessonList}
+            />
+          </TabPane>
+          <TabPane tab={t("student")} key="student">
+            <Table
+              rowKey="studentId"
+              columns={studentColumns}
+              dataSource={studentList}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     </div>
   );

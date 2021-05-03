@@ -26,6 +26,8 @@
   "attendanceList": "Danh sách điểm danh",
   "createInvitation": "Tạo lời mời",
   "joinClassText": "Bạn nhân được lời mời tham gia lớp {{className}} của {{teacherName}}",
+  "lesson": "Tiết học",
+  "student": "Học sinh",
   "page": {
     "login": {
       "title": "Đăng nhập",
