@@ -8,6 +8,7 @@ import {
   AudioOutlined,
   DesktopOutlined,
   PhoneOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { auth } from "../../utils";
@@ -18,6 +19,7 @@ import { consumerObs, closeConsumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
 import "./conference.scss";
 import { Button, Tooltip } from "antd";
+import { ROLE } from "../../constant";
 
 const Conference: React.FC = () => {
   const socketRef = useRef<any>();
@@ -51,8 +53,6 @@ const Conference: React.FC = () => {
       console.error("Socket disconnected: " + message);
     });
 
-    const { id } = auth.getUserData();
-
     socketRef.current.on("yourId", (id: number) => {
       setYourID(id);
     });
@@ -65,10 +65,6 @@ const Conference: React.FC = () => {
       setCaller(data.from);
       setCallerSignal(data.signal);
     });
-    // @ts-ignore
-    window.x = () => {
-      console.log(remoteStreamList);
-    };
 
     consumerObs.subscribe(addConsumer);
     closeConsumerObs.subscribe(removeConsumer);
@@ -164,10 +160,14 @@ const Conference: React.FC = () => {
     setMuted(!muted);
   };
 
+  const startGroupDiscuss = () => {
+    socketRef.current.emit("groupDiscuss", {}, (data: any) => {
+      console.log(data);
+    });
+  };
   return (
     <div className="conf-wrapper">
-      <div className="local-cam-wrapper"></div>
-      <div className="remote-wrapper">
+      <div className="local-cam-wrapper">
         <Video
           // @ts-ignore
           srcObject={localStream}
@@ -176,6 +176,8 @@ const Conference: React.FC = () => {
           width={320}
           height={240}
         />
+      </div>
+      <div className="remote-wrapper">
         <div className="remote">
           {remoteStreamList.map((consumerId: string) => {
             return (
@@ -209,6 +211,15 @@ const Conference: React.FC = () => {
             setIsShareScreen(true);
           }}
         />
+        {role === ROLE.teacher && (
+          <Button
+            type="primary"
+            size="large"
+            shape="circle"
+            onClick={startGroupDiscuss}
+            icon={<TeamOutlined />}
+          />
+        )}
         <Button
           type="primary"
           size="large"

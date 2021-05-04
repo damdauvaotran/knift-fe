@@ -2,7 +2,7 @@
   "hello": "Chao",
   "app": {
     "title": "Knift",
-    "slogan": "Học đi mà làm người"
+    "slogan": "Học không giới hạn"
   },
   "start": "Bắt đầu",
   "end" : "Kết thúc",
@@ -36,6 +36,7 @@
   "female": "Nữ",
   "other": "Khác",
   "youAre": "Bạn là",
+  "copyThisAndSend": "Copy link này và gửi cho học sinh",
   "page": {
     "login": {
       "title": "Đăng nhập",

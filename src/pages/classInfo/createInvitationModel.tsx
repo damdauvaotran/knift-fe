@@ -7,7 +7,7 @@ import { createInvitation } from "../../api/invitation";
 import { add } from "date-fns";
 import { useLocation } from "react-router-dom";
 
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
 interface ICreateInvitationProp {
   visible: boolean;
@@ -34,6 +34,7 @@ const CreateInvitation = (props: ICreateInvitationProp) => {
   const generateInvitation = () => {
     return (
       <div style={{ width: 300 }}>
+        <Text strong> {t("copyThisAndSend")}</Text>
         <Paragraph copyable ellipsis>
           {window.location.host + "/invitation/" + invitation}
         </Paragraph>

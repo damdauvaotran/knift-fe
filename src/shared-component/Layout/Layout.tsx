@@ -36,87 +36,41 @@ export const withLayout = (selectedKey: any) => (WrappedComponent: any) => (
   // if (isLogout) {
   //   // return <Redirect to="/login" />;
   // }
+
+  const backToDashboard = () => {
+    history.push("/");
+  };
   const data: any = getUserData();
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-        theme="light"
-      >
-        <div className="logo">
-          <img
-            src="https://uet.vnu.edu.vn/wp-content/uploads/2019/03/logo-outline.png"
-            alt=""
-            style={{ width: 75 }}
-          />
-        </div>
-        <Menu
-          defaultSelectedKeys={[selectedKey]}
-          style={{ lineHeight: "64px" }}
-          defaultOpenKeys={["admin"]}
-          mode="inline"
-        >
-          {data?.r === 1 &&
-            menu.student.map((student) => {
-              return (
-                <Menu.Item key={student.key}>
-                  <Link to={student.url}>
-                    <span className="submenu-title-wrapper">
-                      <Icon type={student.icon} />
-                      {student.title}
-                    </span>
-                  </Link>
-                </Menu.Item>
-              );
-            })}
-
-          {data && data.r === 2 && (
-            <SubMenu
-              title={
-                <span className="submenu-title-wrapper">
-                  <Icon type="team" />
-                  Admin
-                </span>
-              }
-              key="admin"
-            >
-              {menu.admin.map((admin) => {
-                return (
-                  <Menu.Item key={admin.key}>
-                    <Link to={admin.url}>{admin.title}</Link>
-                  </Menu.Item>
-                );
-              })}
-            </SubMenu>
-          )}
-        </Menu>
-      </Sider>
-
-      <Layout className="layout">
-        <Header style={{ background: "#fff", padding: 0 }}>
-          <div className="header">
-            <Button type="primary" danger onClick={onLogout}>
-              Logout
-            </Button>
+      <Header style={{ background: "#fff", padding: 0 }}>
+        <div className="header">
+          <div className="logo" onClick={backToDashboard}>
+            <img
+              src="https://uet.vnu.edu.vn/wp-content/uploads/2019/03/logo-outline.png"
+              alt=""
+              style={{ width: 75 }}
+            />
           </div>
-        </Header>
-        <Content style={{ padding: "0 50px" }}>
-          <Card style={{ margin: "10px 0" }}>
-            <Title level={5} style={{ textAlign: "left" }}>
-              {selectedKey}
-            </Title>
-          </Card>
-          <Card>
-            <WrappedComponent {...props} />
-          </Card>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Knift ©2018 Created by Knift Team
-        </Footer>
-      </Layout>
+          <Button type="primary" danger onClick={onLogout}>
+            Logout
+          </Button>
+        </div>
+      </Header>
+      <Content style={{ padding: "0 50px" }}>
+        <Card style={{ margin: "10px 0" }}>
+          <Title level={5} style={{ textAlign: "left" }}>
+            {selectedKey}
+          </Title>
+        </Card>
+        <Card>
+          <WrappedComponent {...props} />
+        </Card>
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        Knift ©2021 Created by Knift Team
+      </Footer>
     </Layout>
   );
 };

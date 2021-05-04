@@ -76,8 +76,8 @@ const UpdateClass: FC = () => {
   const onFinish = async (data: IUpdateClass) => {
     const res = await updateClass(classId, {
       name: data.name,
-      endTime: moment(data.endTime).unix(),
-      startTime: moment(data.startTime).unix(),
+      endTime: moment(data.endTime).valueOf(),
+      startTime: moment(data.startTime).valueOf(),
       detail: data.detail,
       subjectId: data.subjectId,
     });

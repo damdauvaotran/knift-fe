@@ -3,13 +3,16 @@
   height: 100%;
   position: relative;
   .local-cam-wrapper {
-    position: absolute;
+    position: fixed;
     left: 10px;
+    bottom: 10px;
   }
   .remote-wrapper {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    position: absolute;
+    left: 350px;
     .remote {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
