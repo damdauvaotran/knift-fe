@@ -27,6 +27,7 @@ import "./classInfo.scss";
 import CreateInvitation from "./createInvitationModel";
 import { ROLE } from "../../constant";
 import { getUserData } from "../../utils/auth";
+import { limitToPagination, paginationToLimit } from "../../utils/pagination";
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -35,6 +36,16 @@ const ClassInfo: FC = () => {
   const [lessonList, setLessonList] = useState<any[]>([]);
   const [studentList, setStudentList] = useState<any[]>([]);
   const [invitationVisible, setInvitationVisible] = useState<boolean>(false);
+  const [lessonPagination, setLessonPagination] = useState({
+    pageSize: 10,
+    current: 1,
+    total: 0,
+  });
+  const [studentPagination, setStudentPagination] = useState({
+    pageSize: 10,
+    current: 1,
+    total: 0,
+  });
   const history = useHistory();
   const { t } = useTranslation();
   // @ts-ignore
@@ -43,20 +54,39 @@ const ClassInfo: FC = () => {
   const { role } = getUserData();
 
   useEffect(() => {
-    fetchLesson();
-    fetchStudent();
+    fetchLesson(paginationToLimit(lessonPagination));
+    fetchStudent(paginationToLimit(studentPagination));
   }, []);
 
-  const fetchLesson = () => {
-    getAllLessonByClassId(classId).then((data: any) => {
+  const fetchLesson = ({
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }) => {
+    getAllLessonByClassId(classId, { limit, offset }).then((data: any) => {
       console.log(data);
       if (data?.success) {
         setLessonList(data.data.lessons);
+        setLessonPagination(
+          limitToPagination({
+            limit: data.data.limit,
+            offset: data.data.offset,
+            total: data.data.total,
+          })
+        );
       }
     });
   };
-  const fetchStudent = () => {
-    getAllStudentByClassId(classId).then((data: any) => {
+  const fetchStudent = ({
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }) => {
+    getAllStudentByClassId(classId, { limit, offset }).then((data: any) => {
       if (data?.success) {
         setStudentList(data.data.students);
       }
@@ -177,6 +207,16 @@ const ClassInfo: FC = () => {
     },
   ];
 
+  const handleLessonTableChange = (pagination: any) => {
+    const limitOffset = paginationToLimit(pagination);
+    fetchLesson(limitOffset);
+  };
+
+  const handleStudentTableChange = (pagination: any) => {
+    const limitOffset = paginationToLimit(pagination);
+    fetchStudent(limitOffset);
+  };
+
   const redirectToLesson = (lessonId: string) => {
     history.push(`/lesson/${lessonId}`);
   };
@@ -193,7 +233,7 @@ const ClassInfo: FC = () => {
     const res = await deleteLesson(lessonId);
     if (res?.success) {
       notification.success({ message: t("deleteSuccess") });
-      fetchLesson();
+      fetchLesson(paginationToLimit(lessonPagination));
     }
   };
 
@@ -201,7 +241,7 @@ const ClassInfo: FC = () => {
     const res = await deleteStudentFromClass(classId, lessonId);
     if (res?.success) {
       notification.success({ message: t("deleteSuccess") });
-      fetchStudent();
+      fetchStudent(paginationToLimit(studentPagination));
     }
   };
 
@@ -235,6 +275,8 @@ const ClassInfo: FC = () => {
               rowKey="lessonId"
               columns={lessonColumns}
               dataSource={lessonList}
+              onChange={handleLessonTableChange}
+              pagination={lessonPagination}
             />
           </TabPane>
           <TabPane tab={t("student")} key="student">
@@ -242,6 +284,8 @@ const ClassInfo: FC = () => {
               rowKey="studentId"
               columns={studentColumns}
               dataSource={studentList}
+              onChange={handleStudentTableChange}
+              pagination={studentPagination}
             />
           </TabPane>
         </Tabs>

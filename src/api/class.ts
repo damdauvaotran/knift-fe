@@ -21,9 +21,19 @@ export interface IUpdateClass {
   subjectId: number;
 }
 
-export const getAllClass = () =>
+export const getAllClass = ({
+  limit,
+  offset,
+}: {
+  limit: number;
+  offset: number;
+}) =>
   getAuthRequest({
     url: `/class`,
+    params: {
+      limit,
+      offset,
+    },
   });
 
 export const getClassById = (id: any) =>

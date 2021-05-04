@@ -14,22 +14,35 @@ import {
 import { formatDate } from "../../utils/time";
 import { getUserData } from "../../utils/auth";
 import { ROLE } from "../../constant";
+import { limitToPagination, paginationToLimit } from "../../utils/pagination";
 
 const { Text } = Typography;
 const ClassList: FC = () => {
   const [classList, setClassList] = useState<any[]>([]);
+  const [pagination, setPagination] = useState({
+    pageSize: 10,
+    current: 1,
+    total: 0,
+  });
   const history = useHistory();
   const { role } = getUserData();
 
   const { t } = useTranslation();
   useEffect(() => {
-    fetchClass();
+    fetchClass({ limit: 10, offset: 0 });
   }, []);
 
-  const fetchClass = () => {
-    getAllClass().then((data: any) => {
+  const fetchClass = ({ limit, offset }: { limit: number; offset: number }) => {
+    getAllClass({ limit, offset }).then((data: any) => {
       console.log(data);
       if (data?.success) {
+        setPagination(
+          limitToPagination({
+            limit: data.data.limit,
+            offset: data.data.offset,
+            total: data.data.total,
+          })
+        );
         setClassList(data.data.classes);
       }
     });
@@ -107,6 +120,13 @@ const ClassList: FC = () => {
     },
   ];
 
+  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+    console.log("page", pagination);
+    const limitOffset = paginationToLimit(pagination);
+    console.log(limitOffset);
+    fetchClass(limitOffset);
+  };
+
   const redirectToClass = (classId: string) => {
     history.push(`/class/${classId}`);
   };
@@ -124,7 +144,7 @@ const ClassList: FC = () => {
     console.log(res);
     if (res?.success) {
       notification.success({ message: t("deleteSuccess") });
-      fetchClass();
+      fetchClass({ limit: 10, offset: 0 });
     }
   };
 
@@ -141,7 +161,13 @@ const ClassList: FC = () => {
           </Button>
         )}
       </div>
-      <Table rowKey="classId" columns={columns} dataSource={classList} />
+      <Table
+        rowKey="classId"
+        columns={columns}
+        dataSource={classList}
+        pagination={pagination}
+        onChange={handleTableChange}
+      />
     </div>
   );
 };

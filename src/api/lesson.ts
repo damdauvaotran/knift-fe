@@ -25,9 +25,22 @@ export const getAllLesson = () =>
     url: `/lesson`,
   });
 
-export const getAllLessonByClassId = (classId: any) =>
+export const getAllLessonByClassId = (
+  classId: any,
+  {
+    limit,
+    offset,
+  }: {
+    limit: number;
+    offset: number;
+  }
+) =>
   getAuthRequest({
     url: `/lesson/class/${classId}`,
+    params: {
+      limit,
+      offset,
+    },
   });
 
 export const getLessonById = (lessonId: any) =>
