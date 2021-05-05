@@ -175,9 +175,17 @@ const ClassInfo: FC = () => {
       key: "displayName",
     },
     {
-      title: t("detail"),
-      dataIndex: "detail",
-      key: "detail",
+      title: t("gender"),
+      dataIndex: "gender",
+      key: "gender",
+      render: (text: string) => {
+        return <div>{t(text.toLowerCase())}</div>;
+      },
+    },
+    {
+      title: "E-mail",
+      dataIndex: "email",
+      key: "email",
     },
     {
       title: t("action"),
@@ -281,7 +289,7 @@ const ClassInfo: FC = () => {
           </TabPane>
           <TabPane tab={t("student")} key="student">
             <Table
-              rowKey="studentId"
+              rowKey="userId"
               columns={studentColumns}
               dataSource={studentList}
               onChange={handleStudentTableChange}
