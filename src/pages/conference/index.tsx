@@ -30,11 +30,7 @@ const Conference: React.FC = () => {
   const [localStream, setLocalStream] = useState<MediaStream>(
     new MediaStream()
   );
-  const [yourID, setYourID] = useState<number>();
-  const [users, setUsers] = useState({});
   const [muted, setMuted] = useState<boolean>(false);
-  const [caller, setCaller] = useState("");
-  const [callerSignal, setCallerSignal] = useState();
   const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
 
   // @ts-ignore
@@ -51,19 +47,6 @@ const Conference: React.FC = () => {
 
     socketRef.current.on("disconnect", (message: any) => {
       console.error("Socket disconnected: " + message);
-    });
-
-    socketRef.current.on("yourId", (id: number) => {
-      setYourID(id);
-    });
-
-    socketRef.current.on("allUsers", (users: object) => {
-      setUsers(users);
-    });
-
-    socketRef.current.on("hey", (data: any) => {
-      setCaller(data.from);
-      setCallerSignal(data.signal);
     });
 
     consumerObs.subscribe(addConsumer);
@@ -130,6 +113,8 @@ const Conference: React.FC = () => {
     consumerStream: MediaStream;
     consumerId: string;
   }) => {
+    console.log("Update remote video list", consumerId);
+
     remoteStreamListRef.current.set(consumerId, consumerStream);
     setRemoteStreamList((old) => [...old, consumerId]);
   };
@@ -142,7 +127,7 @@ const Conference: React.FC = () => {
 
   const handleGetUserMedia = async (stream: MediaStream) => {
     const a = new ConferenceRoom(
-      userId.toString(),
+      conferenceId.toString(),
       conferenceId.toString(),
       socketRef.current
     );
@@ -165,6 +150,7 @@ const Conference: React.FC = () => {
       console.log(data);
     });
   };
+
   return (
     <div className="conf-wrapper">
       <div className="local-cam-wrapper">
@@ -175,6 +161,7 @@ const Conference: React.FC = () => {
           playsInline
           width={320}
           height={240}
+          muted
         />
       </div>
       <div className="remote-wrapper">
@@ -188,7 +175,8 @@ const Conference: React.FC = () => {
                 key={`remote_${consumerId}`}
                 srcObject={remoteStreamListRef.current.get(consumerId)}
                 autoPlay
-                playsInline
+                width={320}
+                height={240}
               />
             );
           })}
