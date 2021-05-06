@@ -15,7 +15,7 @@ import {
   FundProjectionScreenOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { ROLE } from "../../constant";
+import { ROLE, CONF_STATUS } from "../../constant";
 import { getUserData } from "../../utils/auth";
 
 const { Text } = Typography;
@@ -46,7 +46,10 @@ const LessonInfo: FC = () => {
     {
       title: t("status"),
       dataIndex: "status",
-      key: "subjectName",
+      key: "status",
+      render: (text: string) => {
+        return <div>{t(text)}</div>;
+      },
     },
     {
       title: t("start"),
@@ -55,7 +58,7 @@ const LessonInfo: FC = () => {
       render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
     },
     {
-      title: t("start"),
+      title: t("end"),
       dataIndex: "endTime",
       key: "endTime",
       render: (text: string) => <Text>{formatDate(new Date(text))}</Text>,
@@ -66,17 +69,20 @@ const LessonInfo: FC = () => {
       dataIndex: "conferenceId",
       render: (text: string, record: any) => (
         <div>
-          <Button
-            size="middle"
-            type="primary"
-            onClick={() => {
-              redirectToConferencePlayer(text);
-            }}
-            icon={<FundProjectionScreenOutlined />}
-            className="util-button"
-          >
-            {t("join")}
-          </Button>
+          {record.status === CONF_STATUS.waiting && (
+            <Button
+              size="middle"
+              type="primary"
+              onClick={() => {
+                redirectToConferencePlayer(text);
+              }}
+              icon={<FundProjectionScreenOutlined />}
+              className="util-button"
+            >
+              {t("join")}
+            </Button>
+          )}
+
           {role === ROLE.teacher && (
             <Button
               size="middle"

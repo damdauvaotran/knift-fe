@@ -22,6 +22,7 @@
   "deleteSuccess": "Xóa thành công",
   "updateSuccess": "Cập nhật thông tin thành công",
   "areYouSureToDelete": "Bạn có chắc muốn xóa",
+  "areYouSureEndConference": "Bạn có chắc muốn kết thúc cuộc họp",
   "status": "Trạng thái",
   "attendanceList": "Danh sách điểm danh",
   "createInvitation": "Tạo lời mời",
@@ -37,6 +38,9 @@
   "other": "Khác",
   "youAre": "Bạn là",
   "copyThisAndSend": "Copy link này và gửi cho học sinh",
+  "teacherCannotJoin": "Giáo viên không thể tham gia lớp học",
+  "WAITING": "Đang mở",
+  "ENDED": "Đã kết thúc",
   "page": {
     "login": {
       "title": "Đăng nhập",

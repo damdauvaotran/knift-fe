@@ -40,3 +40,9 @@ export const getAttendanceList = (conferenceId: any) => {
     responseType: "blob",
   });
 };
+
+export const endConference = (conferenceId: any) => {
+  return postAuthRequest({
+    url: `/conference/${conferenceId}/end`,
+  });
+};

@@ -363,7 +363,7 @@ export class ConferenceRoom {
 
     consumerObs.notify({
       consumerStream: stream,
-      consumerId: consumer.id,
+      consumer: consumer,
     });
   }
 
@@ -384,6 +384,7 @@ export class ConferenceRoom {
       producerId: producerObj.id,
       kind,
       rtpParameters,
+      appData: producerObj.appData,
     });
 
     console.log("consumer", consumer);

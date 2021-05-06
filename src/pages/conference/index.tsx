@@ -10,16 +10,17 @@ import {
   PhoneOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { auth } from "../../utils";
-import { withLayout } from "../../shared-component/Layout/Layout";
 import { ConferenceRoom } from "../../utils/conferenceRoom";
 import Video from "../../shared-component/Video";
 import { consumerObs, closeConsumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
 import "./conference.scss";
-import { Button, Tooltip } from "antd";
+import { Button, Popconfirm, Tooltip } from "antd";
 import { ROLE } from "../../constant";
+import { useTranslation } from "react-i18next";
+import { endConference } from "../../api/conference";
 
 const Conference: React.FC = () => {
   const socketRef = useRef<any>();
@@ -35,8 +36,9 @@ const Conference: React.FC = () => {
 
   // @ts-ignore
   const { id: conferenceId } = useParams();
-  const { role, id: userId } = getUserData();
-
+  const { t } = useTranslation();
+  const history = useHistory();
+  const { role, id: userId, displayName } = getUserData();
   useEffect(() => {
     socketRef.current = io("localhost:8000");
 
@@ -108,15 +110,18 @@ const Conference: React.FC = () => {
 
   const addConsumer = ({
     consumerStream,
-    consumerId,
+    consumer,
   }: {
     consumerStream: MediaStream;
-    consumerId: string;
+    consumer: any;
   }) => {
-    console.log("Update remote video list", consumerId);
+    console.log("Update remote video list", consumer);
 
-    remoteStreamListRef.current.set(consumerId, consumerStream);
-    setRemoteStreamList((old) => [...old, consumerId]);
+    remoteStreamListRef.current.set(consumer.id, {
+      stream: consumerStream,
+      consumer: consumer,
+    });
+    setRemoteStreamList((old) => [...old, consumer.id]);
   };
 
   const removeConsumer = ({ consumerId }: { consumerId: string }) => {
@@ -151,33 +156,51 @@ const Conference: React.FC = () => {
     });
   };
 
+  const endCall = async () => {
+    if (role === ROLE.teacher) {
+      await endConference(conferenceId);
+    }
+    // @ts-ignore
+    history.goBack();
+  };
+
   return (
     <div className="conf-wrapper">
       <div className="local-cam-wrapper">
-        <Video
-          // @ts-ignore
-          srcObject={localStream}
-          autoPlay
-          playsInline
-          width={320}
-          height={240}
-          muted
-        />
+        <div className="peer-wrapper">
+          <Video
+            // @ts-ignore
+            srcObject={localStream}
+            autoPlay
+            playsInline
+            width={320}
+            height={240}
+            muted
+            className="peer-video"
+          />
+          <div className="peer-name">{displayName}</div>
+        </div>
       </div>
       <div className="remote-wrapper">
         <div className="remote">
           {remoteStreamList.map((consumerId: string) => {
             return (
-              <Video
-                // @ts-ignore
-
-                className="remote-video"
-                key={`remote_${consumerId}`}
-                srcObject={remoteStreamListRef.current.get(consumerId)}
-                autoPlay
-                width={320}
-                height={240}
-              />
+              <div className="peer-wrapper" key={`remote_${consumerId}`}>
+                <Video
+                  // @ts-ignore
+                  className="remote-video peer-video"
+                  srcObject={remoteStreamListRef.current.get(consumerId).stream}
+                  autoPlay
+                  width={320}
+                  height={240}
+                />
+                <div className="peer-name">
+                  {
+                    remoteStreamListRef.current.get(consumerId).consumer
+                      ?.appData?.name
+                  }
+                </div>
+              </div>
             );
           })}
         </div>
@@ -208,13 +231,20 @@ const Conference: React.FC = () => {
             icon={<TeamOutlined />}
           />
         )}
-        <Button
-          type="primary"
-          size="large"
-          danger
-          shape="circle"
-          icon={<PhoneOutlined />}
-        />
+        <Popconfirm
+          title={t("areYouSureEndConference")}
+          onConfirm={() => endCall()}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button
+            type="primary"
+            size="large"
+            danger
+            shape="circle"
+            icon={<PhoneOutlined />}
+          />
+        </Popconfirm>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 export interface IUSerInfo {
   id: number;
   role: string;
+  displayName: string;
 }
 
 export const getUserToken = () => {
