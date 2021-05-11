@@ -64,4 +64,4 @@ const Invitation = () => {
   );
 };
 
-export default withLayout("1")(Invitation);
+export default Invitation;

@@ -103,7 +103,6 @@ export class ConferenceRoom {
         ...data,
         appData: { userId: this.name },
       });
-      console.log("producerTransport", this.producerTransport, data);
       this.producerTransport.on(
         "connect",
         async ({ dtlsParameters }, callback, errback) => {
@@ -218,8 +217,8 @@ export class ConferenceRoom {
      * }]
      */
     this.socket.on("newProducers", async (data) => {
+      console.log("producer length ", data.length);
       for (const producer of data) {
-        console.log("Receiving produce id", producer);
         await this.consume(producer);
       }
     });
@@ -284,8 +283,6 @@ export class ConferenceRoom {
         appData: this.producerTransport?.appData,
       });
 
-      console.log("producer", producer, params);
-
       if (producer) {
         this.producers.set(producer.id, producer);
       }
@@ -341,7 +338,7 @@ export class ConferenceRoom {
           return;
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -386,8 +383,6 @@ export class ConferenceRoom {
       rtpParameters,
       appData: producerObj.appData,
     });
-
-    console.log("consumer", consumer);
 
     const stream = new MediaStream();
     // @ts-ignore

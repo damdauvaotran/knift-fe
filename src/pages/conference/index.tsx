@@ -65,6 +65,8 @@ const Conference: React.FC = () => {
       console.log("Conference unmounting");
       consumerObs.unsubscribe(addConsumer);
       closeConsumerObs.unsubscribe(removeConsumer);
+      conferenceRoomRef.current?.producerTransport?.close();
+      conferenceRoomRef.current?.consumerTransport?.close();
     };
 
     // RTC server setup
@@ -115,8 +117,7 @@ const Conference: React.FC = () => {
     consumerStream: MediaStream;
     consumer: any;
   }) => {
-    console.log("Update remote video list", consumer);
-
+    console.log("adding consumer", consumer);
     remoteStreamListRef.current.set(consumer.id, {
       stream: consumerStream,
       consumer: consumer,
@@ -125,7 +126,6 @@ const Conference: React.FC = () => {
   };
 
   const removeConsumer = ({ consumerId }: { consumerId: string }) => {
-    console.log("removing ", consumerId);
     remoteStreamListRef.current.delete(consumerId);
     setRemoteStreamList((old) => old.filter((csId) => csId !== consumerId));
   };
