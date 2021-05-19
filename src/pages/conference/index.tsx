@@ -33,7 +33,8 @@ const Conference: React.FC = () => {
   );
   const [muted, setMuted] = useState<boolean>(false);
   const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
-
+  const [isGroupDiscussion, setIsGroupDiscussion] = useState<boolean>(false);
+  const [groupDiscussInfo, setGroupDiscussInfo] = useState<any[]>([]);
   // @ts-ignore
   const { id: conferenceId } = useParams();
   const { t } = useTranslation();
@@ -51,14 +52,39 @@ const Conference: React.FC = () => {
       console.error("Socket disconnected: " + message);
     });
 
+    socketRef.current.on("startGroupDiscuss", () => {
+      console.log("receive startGroupDiscuss");
+      socketRef.current.emit("getGroup", token);
+      setIsGroupDiscussion(true);
+    });
+
+    socketRef.current.on("newGroup", (data: any) => {
+      console.log("peer data", data);
+      setGroupDiscussInfo(data);
+    });
+
+    socketRef.current.on("endGroupDiscuss", () => {
+      setIsGroupDiscussion(false);
+    });
+
     consumerObs.subscribe(addConsumer);
     closeConsumerObs.subscribe(removeConsumer);
+
+    // @ts-ignore
+    window.x = () => {
+      console.log(remoteStreamListRef.current);
+    };
 
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then(async (stream: MediaStream) => {
         setLocalStream(stream);
         await handleGetUserMedia(stream);
+
+        socketRef.current.emit("getRoomInfo", (data: any) => {
+          console.log("Room info", data);
+          setIsGroupDiscussion(data?.isGroupDiscussion);
+        });
       });
 
     return () => {
@@ -122,12 +148,20 @@ const Conference: React.FC = () => {
       stream: consumerStream,
       consumer: consumer,
     });
-    setRemoteStreamList((old) => [...old, consumer.id]);
+    setRemoteStreamList((old) => [
+      ...old,
+      {
+        stream: consumerStream,
+        consumer: consumer,
+      },
+    ]);
   };
 
   const removeConsumer = ({ consumerId }: { consumerId: string }) => {
     remoteStreamListRef.current.delete(consumerId);
-    setRemoteStreamList((old) => old.filter((csId) => csId !== consumerId));
+    setRemoteStreamList((old) =>
+      old.filter((cs: any) => cs.consumer.id !== consumerId)
+    );
   };
 
   const handleGetUserMedia = async (stream: MediaStream) => {
@@ -150,10 +184,26 @@ const Conference: React.FC = () => {
     setMuted(!muted);
   };
 
+  const toggleGroupDiscussion = () => {
+    setIsGroupDiscussion(!isGroupDiscussion);
+  };
+
+  useEffect(() => {
+    if (isGroupDiscussion) {
+      startGroupDiscuss();
+    } else {
+      closeGroupDiscuss();
+    }
+  }, [isGroupDiscussion]);
+
   const startGroupDiscuss = () => {
-    socketRef.current.emit("groupDiscuss", {}, (data: any) => {
+    socketRef.current.emit("groupDiscuss", { count: 2 }, (data: any) => {
       console.log(data);
     });
+  };
+
+  const closeGroupDiscuss = () => {
+    socketRef.current.emit("closeGroupDiscuss");
   };
 
   const endCall = async () => {
@@ -182,28 +232,56 @@ const Conference: React.FC = () => {
         </div>
       </div>
       <div className="remote-wrapper">
-        <div className="remote">
-          {remoteStreamList.map((consumerId: string) => {
-            return (
-              <div className="peer-wrapper" key={`remote_${consumerId}`}>
-                <Video
-                  // @ts-ignore
-                  className="remote-video peer-video"
-                  srcObject={remoteStreamListRef.current.get(consumerId).stream}
-                  autoPlay
-                  width={320}
-                  height={240}
-                />
-                <div className="peer-name">
-                  {
-                    remoteStreamListRef.current.get(consumerId).consumer
-                      ?.appData?.name
-                  }
+        {isGroupDiscussion ? (
+          <div className="remote">
+            {remoteStreamList
+              .filter((consumerStream: any) => {
+                return groupDiscussInfo
+                  .map((discussInfo: any) => discussInfo.userId)
+                  .includes(consumerStream.consumer.appData.userId);
+              })
+              .map((consumerStream: any) => {
+                return (
+                  <div
+                    className="peer-wrapper"
+                    key={`remote_${consumerStream}`}
+                  >
+                    <Video
+                      // @ts-ignore
+                      className="remote-video peer-video"
+                      srcObject={consumerStream.stream}
+                      autoPlay
+                      width={320}
+                      height={240}
+                    />
+                    <div className="peer-name">
+                      {consumerStream.consumer?.appData?.name}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        ) : (
+          <div className="remote">
+            {remoteStreamList.map((consumerStream: any) => {
+              return (
+                <div className="peer-wrapper" key={`remote_${consumerStream}`}>
+                  <Video
+                    // @ts-ignore
+                    className="remote-video peer-video"
+                    srcObject={consumerStream.stream}
+                    autoPlay
+                    width={320}
+                    height={240}
+                  />
+                  <div className="peer-name">
+                    {consumerStream.consumer?.appData?.name}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
       <div className="conf-util">
         <Button
@@ -227,7 +305,7 @@ const Conference: React.FC = () => {
             type="primary"
             size="large"
             shape="circle"
-            onClick={startGroupDiscuss}
+            onClick={toggleGroupDiscussion}
             icon={<TeamOutlined />}
           />
         )}
