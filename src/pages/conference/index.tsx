@@ -321,22 +321,24 @@ const Conference: React.FC = () => {
             />
           </Tooltip>
         )}
-        <Popconfirm
-          title={t("areYouSureEndConference")}
-          onConfirm={() => endCall()}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Tooltip title={t("end")}>
-            <Button
-              type="primary"
-              size="large"
-              danger
-              shape="circle"
-              icon={<PhoneOutlined />}
-            />
-          </Tooltip>
-        </Popconfirm>
+        {role === ROLE.teacher && (
+          <Popconfirm
+            title={t("areYouSureEndConference")}
+            onConfirm={() => endCall()}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Tooltip title={t("end")}>
+              <Button
+                type="primary"
+                size="large"
+                danger
+                shape="circle"
+                icon={<PhoneOutlined />}
+              />
+            </Tooltip>
+          </Popconfirm>
+        )}
       </div>
     </div>
   );
