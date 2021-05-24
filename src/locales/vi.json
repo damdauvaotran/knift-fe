@@ -41,6 +41,9 @@
   "teacherCannotJoin": "Giáo viên không thể tham gia lớp học",
   "WAITING": "Đang mở",
   "ENDED": "Đã kết thúc",
+  "audio": "Âm thanh",
+  "shareScreen": "Chia sẻ màn hình",
+  "groupDiscuss": "Thảo luận nhóm",
   "page": {
     "login": {
       "title": "Đăng nhập",

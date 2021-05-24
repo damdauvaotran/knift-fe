@@ -67,6 +67,11 @@ const Conference: React.FC = () => {
       setIsGroupDiscussion(false);
     });
 
+    socketRef.current.on("closeConference", () => {
+      // @ts-ignore
+      history.goBack();
+    });
+
     consumerObs.subscribe(addConsumer);
     closeConsumerObs.subscribe(removeConsumer);
 
@@ -209,6 +214,7 @@ const Conference: React.FC = () => {
   const endCall = async () => {
     if (role === ROLE.teacher) {
       await endConference(conferenceId);
+      socketRef.current.emit("endCall");
     }
     // @ts-ignore
     history.goBack();
@@ -284,30 +290,36 @@ const Conference: React.FC = () => {
         )}
       </div>
       <div className="conf-util">
-        <Button
-          type="primary"
-          size="large"
-          shape="circle"
-          icon={muted ? <AudioMutedOutlined /> : <AudioOutlined />}
-          onClick={toggleMute}
-        />
-        <Button
-          type="primary"
-          size="large"
-          shape="circle"
-          icon={<DesktopOutlined />}
-          onClick={() => {
-            setIsShareScreen(true);
-          }}
-        />
-        {role === ROLE.teacher && (
+        <Tooltip title={t("audio")}>
           <Button
             type="primary"
             size="large"
             shape="circle"
-            onClick={toggleGroupDiscussion}
-            icon={<TeamOutlined />}
+            icon={muted ? <AudioMutedOutlined /> : <AudioOutlined />}
+            onClick={toggleMute}
           />
+        </Tooltip>
+        <Tooltip title={t("shareScreen")}>
+          <Button
+            type="primary"
+            size="large"
+            shape="circle"
+            icon={<DesktopOutlined />}
+            onClick={() => {
+              setIsShareScreen(true);
+            }}
+          />
+        </Tooltip>
+        {role === ROLE.teacher && (
+          <Tooltip title={t("groupDiscuss")}>
+            <Button
+              type="primary"
+              size="large"
+              shape="circle"
+              onClick={toggleGroupDiscussion}
+              icon={<TeamOutlined />}
+            />
+          </Tooltip>
         )}
         <Popconfirm
           title={t("areYouSureEndConference")}
@@ -315,13 +327,15 @@ const Conference: React.FC = () => {
           okText="Yes"
           cancelText="No"
         >
-          <Button
-            type="primary"
-            size="large"
-            danger
-            shape="circle"
-            icon={<PhoneOutlined />}
-          />
+          <Tooltip title={t("end")}>
+            <Button
+              type="primary"
+              size="large"
+              danger
+              shape="circle"
+              icon={<PhoneOutlined />}
+            />
+          </Tooltip>
         </Popconfirm>
       </div>
     </div>
