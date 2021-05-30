@@ -45,6 +45,8 @@
   "shareScreen": "Chia sẻ màn hình",
   "groupDiscuss": "Thảo luận nhóm",
   "returnToMainPage": "Giáo viên đã kết thúc buổi học, đang trở vể trang chủ",
+  "usernameToShort": "Tên đăng nhập quá ngắn",
+  "passwordToShort": "Mật khẩu quá ngắn",
   "page": {
     "login": {
       "title": "Đăng nhập",

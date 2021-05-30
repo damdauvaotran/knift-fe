@@ -47,7 +47,10 @@ const Register: React.FC = () => {
         >
           <Form.Item
             name="username"
-            rules={[{ required: true, message: t("fieldIsRequired") }]}
+            rules={[
+              { required: true, message: t("fieldIsRequired") },
+              { min: 6, message: t("usernameToShort") },
+            ]}
           >
             <Input
               prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
@@ -56,7 +59,10 @@ const Register: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: t("fieldIsRequired") }]}
+            rules={[
+              { required: true, message: t("fieldIsRequired") },
+              { min: 6, message: t("passwordToShort") },
+            ]}
           >
             <Input
               prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
