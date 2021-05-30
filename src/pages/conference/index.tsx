@@ -17,10 +17,11 @@ import Video from "../../shared-component/Video";
 import { consumerObs, closeConsumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
 import "./conference.scss";
-import { Button, Popconfirm, Tooltip } from "antd";
+import { Button, notification, Popconfirm, Tooltip } from "antd";
 import { ROLE } from "../../constant";
 import { useTranslation } from "react-i18next";
 import { endConference } from "../../api/conference";
+import { delay } from "../../utils/async";
 
 const Conference: React.FC = () => {
   const socketRef = useRef<any>();
@@ -216,8 +217,10 @@ const Conference: React.FC = () => {
       await endConference(conferenceId);
       socketRef.current.emit("endCall");
     }
+    notification.open({ message: t("returnToMainPage") });
+    await delay(1000);
     // @ts-ignore
-    history.goBack();
+    await history.goBack();
   };
 
   return (
