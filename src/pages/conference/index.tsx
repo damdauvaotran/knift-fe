@@ -68,7 +68,9 @@ const Conference: React.FC = () => {
       setIsGroupDiscussion(false);
     });
 
-    socketRef.current.on("closeConference", () => {
+    socketRef.current.on("closeConference", async () => {
+      notification.open({ message: t("returnToMainPage") });
+      await delay(1000);
       // @ts-ignore
       history.goBack();
     });
@@ -97,8 +99,8 @@ const Conference: React.FC = () => {
       console.log("Conference unmounting");
       consumerObs.unsubscribe(addConsumer);
       closeConsumerObs.unsubscribe(removeConsumer);
-      conferenceRoomRef.current?.producerTransport?.close();
-      conferenceRoomRef.current?.consumerTransport?.close();
+      conferenceRoomRef?.current?.producerTransport?.close();
+      conferenceRoomRef?.current?.consumerTransport?.close();
     };
 
     // RTC server setup
@@ -217,8 +219,6 @@ const Conference: React.FC = () => {
       await endConference(conferenceId);
       socketRef.current.emit("endCall");
     }
-    notification.open({ message: t("returnToMainPage") });
-    await delay(1000);
     // @ts-ignore
     await history.goBack();
   };
