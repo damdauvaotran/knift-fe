@@ -44,9 +44,12 @@
   "audio": "Âm thanh",
   "shareScreen": "Chia sẻ màn hình",
   "groupDiscuss": "Thảo luận nhóm",
+  "teacherStartGroupDiscuss": "Giáo viên đã bắt đầu buổi thảo luận nhóm",
+  "groupDiscussionOver": "Buổi thảo luận nhóm đã kết thúc",
   "returnToMainPage": "Giáo viên đã kết thúc buổi học, đang trở vể trang chủ",
   "usernameToShort": "Tên đăng nhập quá ngắn",
   "passwordToShort": "Mật khẩu quá ngắn",
+  "memberCount": "Số thành viên",
   "page": {
     "login": {
       "title": "Đăng nhập",

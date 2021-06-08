@@ -17,7 +17,17 @@ import Video from "../../shared-component/Video";
 import { consumerObs, closeConsumerObs } from "../../ observer/";
 import { getUserData } from "../../utils/auth";
 import "./conference.scss";
-import { Button, notification, Popconfirm, Tooltip } from "antd";
+import {
+  Button,
+  notification,
+  Popconfirm,
+  Tooltip,
+  Popover,
+  Row,
+  InputNumber,
+  Col,
+  Form,
+} from "antd";
 import { ROLE } from "../../constant";
 import { useTranslation } from "react-i18next";
 import { endConference } from "../../api/conference";
@@ -33,6 +43,7 @@ const Conference: React.FC = () => {
     new MediaStream()
   );
   const [muted, setMuted] = useState<boolean>(false);
+  const [groupCount, setGroupCount] = useState<number>(4);
   const [isShareScreen, setIsShareScreen] = useState<boolean>(false);
   const [isGroupDiscussion, setIsGroupDiscussion] = useState<boolean>(false);
   const [groupDiscussInfo, setGroupDiscussInfo] = useState<any[]>([]);
@@ -54,17 +65,17 @@ const Conference: React.FC = () => {
     });
 
     socketRef.current.on("startGroupDiscuss", () => {
-      console.log("receive startGroupDiscuss");
-      socketRef.current.emit("getGroup", token);
+      notification.success({ message: t("teacherStartGroupDiscuss") });
       setIsGroupDiscussion(true);
+      socketRef.current.emit("getGroup", token);
     });
 
     socketRef.current.on("newGroup", (data: any) => {
-      console.log("peer data", data);
       setGroupDiscussInfo(data);
     });
 
     socketRef.current.on("endGroupDiscuss", () => {
+      notification.success({ message: t("groupDiscussionOver") });
       setIsGroupDiscussion(false);
     });
 
@@ -193,21 +204,23 @@ const Conference: React.FC = () => {
   };
 
   const toggleGroupDiscussion = () => {
+    if (isGroupDiscussion) {
+      closeGroupDiscuss();
+    } else {
+      startGroupDiscuss();
+    }
     setIsGroupDiscussion(!isGroupDiscussion);
   };
 
-  useEffect(() => {
-    if (isGroupDiscussion) {
-      startGroupDiscuss();
-    } else {
-      closeGroupDiscuss();
-    }
-  }, [isGroupDiscussion]);
-
   const startGroupDiscuss = () => {
-    socketRef.current.emit("groupDiscuss", { count: 2 }, (data: any) => {
-      console.log(data);
-    });
+    console.log(`start with ${groupCount} member`);
+    socketRef.current.emit(
+      "groupDiscuss",
+      { count: groupCount },
+      (data: any) => {
+        console.log(data);
+      }
+    );
   };
 
   const closeGroupDiscuss = () => {
@@ -221,6 +234,27 @@ const Conference: React.FC = () => {
     }
     // @ts-ignore
     await history.goBack();
+  };
+
+  const renderGroupDiscussSetting = () => {
+    return (
+      <div>
+        <Row>
+          <Form.Item label={t("memberCount")}>
+            <InputNumber value={groupCount} onChange={setGroupCount} />
+          </Form.Item>
+        </Row>
+        <Row>
+          <Col offset={12}>
+            <Form.Item>
+              <Button type="primary" onClick={startGroupDiscuss}>
+                {t("start")}
+              </Button>
+            </Form.Item>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   return (
@@ -313,13 +347,28 @@ const Conference: React.FC = () => {
             }}
           />
         </Tooltip>
-        {role === ROLE.teacher && (
+
+        {role === ROLE.teacher && !isGroupDiscussion && (
+          <Tooltip title={t("groupDiscuss")}>
+            <Popover content={renderGroupDiscussSetting()} trigger="click">
+              <Button
+                type="primary"
+                size="large"
+                shape="circle"
+                icon={<TeamOutlined />}
+              />
+            </Popover>
+          </Tooltip>
+        )}
+
+        {role === ROLE.teacher && isGroupDiscussion && (
           <Tooltip title={t("groupDiscuss")}>
             <Button
               type="primary"
+              danger
               size="large"
               shape="circle"
-              onClick={toggleGroupDiscussion}
+              onClick={closeGroupDiscuss}
               icon={<TeamOutlined />}
             />
           </Tooltip>
