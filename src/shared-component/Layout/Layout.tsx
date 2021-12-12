@@ -23,6 +23,7 @@ export const withLayout = (selectedKey: any) => (WrappedComponent: any) => (
 ) => {
   const [collapsed, setCollapsed] = useState<boolean>();
   const [isLogout, setIsLogout] = useState<boolean>();
+  const { displayName } = getUserData();
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -53,9 +54,14 @@ export const withLayout = (selectedKey: any) => (WrappedComponent: any) => (
               style={{ width: 75 }}
             />
           </div>
-          <Button type="primary" danger onClick={onLogout}>
-            Logout
-          </Button>
+          <div style={{ display: "flex", flexWrap: "nowrap" }}>
+            <div style={{ margin: "0 10px" }}>{displayName}</div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Button type="primary" danger onClick={onLogout}>
+                Logout
+              </Button>
+            </div>
+          </div>
         </div>
       </Header>
       <Content style={{ padding: "0 50px" }}>
