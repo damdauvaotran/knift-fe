@@ -1,21 +1,61 @@
 .conf-wrapper{
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: relative;
+  background: linear-gradient(to top, #243B55, #141E30);
   .local-cam-wrapper {
-    position: absolute;
+    position: fixed;
     left: 10px;
+    bottom: 10px;
   }
-
-  .remote-cam-wrapper {
-
+  .remote-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    left: 350px;
+    max-height: 100vh;
+    .remote {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+      grid-gap: 10px 10px;
+      align-content: center;
+      max-height: 100vh;
+      .remote-video {
+        width: 320px;
+        height: 240px;
+      }
+    }
   }
   .conf-util{
     display: flex;
     justify-content: space-evenly;
     position: fixed;
     bottom: 100px;
-    width: 100%;
+    width: 60%;
+    margin: 0 20%;
+  }
+
+  .peer-wrapper{
+    position: relative;
+    width: 320px;
+    height: 260px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background-color: #243B55;
+    .peer-video{
+      position: absolute;
+      top: 10px
+  }
+    .peer-name{
+      position: absolute;
+      bottom: 10px;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.85);
+      width: 100%;
+      text-align: center;
+    }
   }
 }
 

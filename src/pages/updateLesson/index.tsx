@@ -13,10 +13,16 @@ import {
 } from "antd";
 import { useTranslation } from "react-i18next";
 import { withLayout } from "../../shared-component/Layout/Layout";
-import { getAllSubject } from "../../api/subject";
-import { ICreateClass, createClass } from "../../api/class";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import {
+  ICreateLesson,
+  createLesson,
+  updateLesson,
+  IUpdateLesson,
+  getLessonById,
+} from "../../api/lesson";
+import { getClassById } from "../../api/class";
 
 const { Option } = Select;
 
@@ -28,41 +34,48 @@ const tailLayout = {
   wrapperCol: { offset: 4, span: 16 },
 };
 
-export interface ISubject {
-  subjectId: number;
-  name: string;
-}
-
-const CreateClass: FC = () => {
+const UpdateLesson: FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const [subjectList, setSubjectList] = useState<ISubject[]>();
+  const [form] = Form.useForm();
+  const [classId, setClassId] = useState();
+
+  // @ts-ignore
+  const { id: lessonId } = useParams();
+
   useEffect(() => {
-    getAllSubject().then((data) => {
-      console.log(data);
-      const subjectList = data?.data?.subjects;
-      if (subjectList && Array.isArray(subjectList)) {
-        setSubjectList(subjectList);
-      }
-    });
+    fetchLessonInfo();
   }, []);
 
-  const onFinishFailed = () => {};
-  const onFinish = async (data: ICreateClass) => {
-    console.log(data);
-    const res = await createClass({
-      name: data.name,
-      endTime: moment(data.endTime).unix(),
-      startTime: moment(data.startTime).unix(),
-      detail: data.detail,
-      subjectId: data.subjectId,
-    });
-    console.log(res);
+  const fetchLessonInfo = async () => {
+    const res = await getLessonById(lessonId);
     if (res?.success) {
-      await notification.success({
-        message: t("createClassSuccess"),
+      const lessonInfo = res?.data?.lesson;
+      console.log(lessonInfo);
+      setClassId(lessonInfo.classId);
+      form.setFieldsValue({
+        name: lessonInfo?.name,
+        detail: lessonInfo?.detail,
+        startTime: moment(lessonInfo?.startTime),
+        endTime: moment(lessonInfo?.endTime),
       });
-      history.push("/class");
+    }
+  };
+
+  const onFinishFailed = () => {};
+  const onFinish = async (data: IUpdateLesson) => {
+    console.log(data);
+    const res = await updateLesson(lessonId, {
+      name: data.name,
+      endTime: moment(data.endTime).valueOf(),
+      startTime: moment(data.startTime).valueOf(),
+      detail: data.detail,
+    });
+    if (res?.success) {
+      notification.success({
+        message: t("createLessonSuccess"),
+      });
+      history.push(`/class/${classId}`);
     }
   };
 
@@ -70,28 +83,18 @@ const CreateClass: FC = () => {
     <div>
       <Form
         name="basic"
+        form={form}
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         {...layout}
       >
         <Form.Item
-          label={t("className")}
+          label={t("lessonName")}
           name="name"
           rules={[{ required: true, message: "Please input your username!" }]}
         >
           <Input />
-        </Form.Item>
-        <Form.Item
-          label={t("subject")}
-          name="subjectId"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Select>
-            {subjectList?.map((subject) => (
-              <Option value={subject.subjectId}>{subject.name}</Option>
-            ))}
-          </Select>
         </Form.Item>
         <Form.Item
           label={t("detail")}
@@ -124,4 +127,4 @@ const CreateClass: FC = () => {
   );
 };
 
-export default withLayout("Tạo lớp")(CreateClass);
+export default withLayout("Cập nhật tiết học")(UpdateLesson);

@@ -2,7 +2,7 @@
   "hello": "Chao",
   "app": {
     "title": "Knift",
-    "slogan": "Học đi mà làm người"
+    "slogan": "Học không giới hạn"
   },
   "start": "Bắt đầu",
   "end" : "Kết thúc",
@@ -12,10 +12,44 @@
   "name": "Tên",
   "className": "Tên lớp học",
   "createClass": "Tạo lớp học",
+  "createLesson": "Tạo buổi học",
   "subject": "Môn học",
   "lessonName": "Tên buổi học",
   "createClassSuccess": "Tạo lớp thành công",
   "createLessonSuccess": "Tạo buổi học thành công",
+  "createConferenceSuccess": "Tạo buổi họp thành công",
+  "createConference": "Tạo buổi họp trực tuyến",
+  "deleteSuccess": "Xóa thành công",
+  "updateSuccess": "Cập nhật thông tin thành công",
+  "areYouSureToDelete": "Bạn có chắc muốn xóa",
+  "areYouSureEndConference": "Bạn có chắc muốn kết thúc cuộc họp",
+  "status": "Trạng thái",
+  "attendanceList": "Danh sách điểm danh",
+  "createInvitation": "Tạo lời mời",
+  "joinClassText": "Bạn nhân được lời mời tham gia lớp {{className}} của {{teacherName}}",
+  "lesson": "Tiết học",
+  "student": "Học sinh",
+  "teacher": "Giáo viên",
+  "fieldIsRequired": "Trường này là bắt buộc",
+  "passwordNotMatch": "Mật khẩu không trùng nhau",
+  "gender": "Giới tính",
+  "male": "Nam",
+  "female": "Nữ",
+  "other": "Khác",
+  "youAre": "Bạn là",
+  "copyThisAndSend": "Copy link này và gửi cho học sinh",
+  "teacherCannotJoin": "Giáo viên không thể tham gia lớp học",
+  "WAITING": "Đang mở",
+  "ENDED": "Đã kết thúc",
+  "audio": "Âm thanh",
+  "shareScreen": "Chia sẻ màn hình",
+  "groupDiscuss": "Thảo luận nhóm",
+  "teacherStartGroupDiscuss": "Giáo viên đã bắt đầu buổi thảo luận nhóm",
+  "groupDiscussionOver": "Buổi thảo luận nhóm đã kết thúc",
+  "returnToMainPage": "Giáo viên đã kết thúc buổi học, đang trở vể trang chủ",
+  "usernameToShort": "Tên đăng nhập quá ngắn",
+  "passwordToShort": "Mật khẩu quá ngắn",
+  "memberCount": "Số thành viên",
   "page": {
     "login": {
       "title": "Đăng nhập",
@@ -27,7 +61,8 @@
     "register": {
       "title": "Đăng ký",
       "button": {
-        "register": "Đăng ký"
+        "register": "Đăng ký",
+        "orLogin": "Bạn có tài khoản rồi, hãy"
       }
     },
     "class": {

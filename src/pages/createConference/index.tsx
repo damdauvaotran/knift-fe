@@ -14,9 +14,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { getAllSubject } from "../../api/subject";
-import { ICreateClass, createClass } from "../../api/class";
+import { ICreateConference, createConference } from "../../api/conference";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -33,36 +33,27 @@ export interface ISubject {
   name: string;
 }
 
-const CreateClass: FC = () => {
+const CreateConference: FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const [subjectList, setSubjectList] = useState<ISubject[]>();
-  useEffect(() => {
-    getAllSubject().then((data) => {
-      console.log(data);
-      const subjectList = data?.data?.subjects;
-      if (subjectList && Array.isArray(subjectList)) {
-        setSubjectList(subjectList);
-      }
-    });
-  }, []);
+  // @ts-ignore
+  const { lessonId } = useParams();
 
   const onFinishFailed = () => {};
-  const onFinish = async (data: ICreateClass) => {
+
+  const onFinish = async (data: ICreateConference) => {
     console.log(data);
-    const res = await createClass({
-      name: data.name,
-      endTime: moment(data.endTime).unix(),
-      startTime: moment(data.startTime).unix(),
-      detail: data.detail,
-      subjectId: data.subjectId,
+    const res = await createConference({
+      endTime: moment(data.endTime).valueOf(),
+      startTime: moment(data.startTime).valueOf(),
+      lessonId: parseInt(lessonId, 10),
     });
     console.log(res);
     if (res?.success) {
       await notification.success({
-        message: t("createClassSuccess"),
+        message: t("createConferenceSuccess"),
       });
-      history.push("/class");
+      history.push(`/lesson/${lessonId}`);
     }
   };
 
@@ -75,31 +66,6 @@ const CreateClass: FC = () => {
         onFinishFailed={onFinishFailed}
         {...layout}
       >
-        <Form.Item
-          label={t("className")}
-          name="name"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label={t("subject")}
-          name="subjectId"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Select>
-            {subjectList?.map((subject) => (
-              <Option value={subject.subjectId}>{subject.name}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label={t("detail")}
-          name="detail"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.TextArea />
-        </Form.Item>
         <Form.Item
           label={t("start")}
           name="startTime"
@@ -124,4 +90,4 @@ const CreateClass: FC = () => {
   );
 };
 
-export default withLayout("Tạo lớp")(CreateClass);
+export default withLayout("Tạo buổi gặp mặt")(CreateConference);

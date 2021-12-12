@@ -6,6 +6,7 @@ interface IRegisterReq {
   displayName: string;
   gender: string;
   email: string;
+  roleId: number;
 }
 interface ILoginReq {
   username: string;
@@ -28,15 +29,17 @@ export const register = ({
   gender,
   displayName,
   email,
+  roleId,
 }: IRegisterReq) => {
   return postRequest({
-    url: "/auth/register",
+    url: "/auth/signup",
     data: {
       username,
       password,
       gender,
       email,
       displayName,
+      roleId,
     },
   });
 };

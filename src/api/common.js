@@ -12,8 +12,25 @@ const makeRequest = async (config) => {
   return res.data;
 };
 
+const makeRequestWithHeader = async (config) => {
+  const res = await axios({
+    ...config,
+    baseURL: defaultEndpoint,
+  });
+  return res;
+};
+
 const makeAuthRequest = (config) => {
   return makeRequest({
+    ...config,
+    headers: {
+      authorization: `Bearer ${getUserToken()}`,
+    },
+  });
+};
+
+const makeAuthRequestWithHeader = (config) => {
+  return makeRequestWithHeader({
     ...config,
     headers: {
       authorization: `Bearer ${getUserToken()}`,
@@ -37,6 +54,13 @@ export const postRequest = (config) => {
 
 export const getAuthRequest = (config) => {
   return makeAuthRequest({
+    ...config,
+    method: "GET",
+  });
+};
+
+export const getAuthRequestWithHeader = (config) => {
+  return makeAuthRequestWithHeader({
     ...config,
     method: "GET",
   });

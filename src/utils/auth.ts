@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 export interface IUSerInfo {
   id: number;
   role: string;
+  displayName: string;
 }
 
 export const getUserToken = () => {
@@ -30,5 +31,5 @@ export const isLogin = () => {
 
 export const getUserData = (): IUSerInfo => {
   const token = getUserToken() || "";
-  return jwt.decode(token) as IUSerInfo;
+  return (jwt.decode(token) as IUSerInfo) ?? { id: null, role: null };
 };

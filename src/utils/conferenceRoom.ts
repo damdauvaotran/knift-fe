@@ -43,6 +43,7 @@ export class ConferenceRoom {
     }).catch((err: Error) => {
       console.log(err);
     });
+    console.log("Done create room");
   }
 
   async join(name: string, roomId: string) {
@@ -52,13 +53,13 @@ export class ConferenceRoom {
       roomId,
     });
 
-    console.log(e);
-    const data = await this.socketRequest("getRouterRtpCapabilities");
+    const routerRTPCapability = await this.socketRequest(
+      "getRouterRtpCapabilities"
+    );
     let device = await this.loadDevice(
-      data as mediaSoupClient.types.RtpCapabilities
+      routerRTPCapability as mediaSoupClient.types.RtpCapabilities
     );
     this.device = device;
-    console.log("device", device);
     await this.initTransports(device);
     this.socket.emit("getProducers");
   }
@@ -98,8 +99,10 @@ export class ConferenceRoom {
         return;
       }
 
-      this.producerTransport = device.createSendTransport(data);
-      console.log("producerTransport", this.producerTransport);
+      this.producerTransport = device.createSendTransport({
+        ...data,
+        appData: { userId: this.name },
+      });
       this.producerTransport.on(
         "connect",
         async ({ dtlsParameters }, callback, errback) => {
@@ -214,9 +217,9 @@ export class ConferenceRoom {
      * }]
      */
     this.socket.on("newProducers", async (data) => {
-      console.log("new producers", data);
-      for (const { producerId } of data) {
-        await this.consume(producerId);
+      console.log("producer length ", data.length);
+      for (const producer of data) {
+        await this.consume(producer);
       }
     });
 
@@ -275,10 +278,10 @@ export class ConferenceRoom {
         };
       }
       // @ts-ignore
-      const producer = await this.producerTransport.produce(params);
-      producer.appData.sourceId = sourceId;
-
-      console.log("producer", producer, params);
+      const producer = await this.producerTransport.produce({
+        ...params,
+        appData: this.producerTransport?.appData,
+      });
 
       if (producer) {
         this.producers.set(producer.id, producer);
@@ -335,14 +338,14 @@ export class ConferenceRoom {
           return;
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
-  async consume(producerId: string) {
+  async consume(producer: any) {
     //let info = await roomInfo()
 
-    const consumerStreamInfo = await this.getConsumeStream(producerId);
+    const consumerStreamInfo = await this.getConsumeStream(producer);
 
     const { consumer, stream, kind } = consumerStreamInfo;
 
@@ -357,49 +360,30 @@ export class ConferenceRoom {
 
     consumerObs.notify({
       consumerStream: stream,
-      consumerId: consumer.id,
+      consumer: consumer,
     });
-    let elem;
-    const remoteVideoEl = document.getElementById("remote");
-    if (kind === "video") {
-      // elem = document.createElement("video");
-      // elem.srcObject = stream;
-      // elem.id = consumer.id;
-      // elem.playsInline = false;
-      // elem.autoplay = true;
-      // elem.className = "vid";
-      // // @ts-ignore
-      // remoteVideoEl.appendChild(elem);
-      // Todo: assign video to remote element
-    } else {
-      // elem = document.createElement("audio");
-      // elem.srcObject = stream;
-      // elem.id = consumer.id;
-      // elem.playsinline = false;
-      // elem.autoplay = true;
-      // this.remoteAudioEl.appendChild(elem);
-      // Todo: assign audio to remote element
-    }
   }
 
   async getConsumeStream(
-    producerId: string
+    producerObj: any
   ): Promise<{ consumer: any; stream: any; kind: any }> {
     const rtpCapabilities = this.device?.rtpCapabilities;
     const data = await this.socketRequest("consume", {
       rtpCapabilities,
       // @ts-ignore
       consumerTransportId: this.consumerTransport.id,
-      producerId,
+      producerId: producerObj.id,
     });
     const { id, kind, rtpParameters } = data;
 
     const consumer = await this.consumerTransport?.consume({
       id,
-      producerId,
+      producerId: producerObj.id,
       kind,
       rtpParameters,
+      appData: producerObj.appData,
     });
+
     const stream = new MediaStream();
     // @ts-ignore
     stream.addTrack(consumer.track);

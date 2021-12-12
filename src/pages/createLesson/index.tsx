@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import moment from "moment";
 import { useHistory, useParams } from "react-router-dom";
-import { ICreateLesson, createLesson } from "../../api/student/lesson";
+import { ICreateLesson, createLesson } from "../../api/lesson";
 
 const { Option } = Select;
 

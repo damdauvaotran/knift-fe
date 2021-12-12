@@ -14,9 +14,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { withLayout } from "../../shared-component/Layout/Layout";
 import { getAllSubject } from "../../api/subject";
-import { ICreateClass, createClass } from "../../api/class";
+import {
+  ICreateClass,
+  getClassById,
+  updateClass,
+  IUpdateClass,
+} from "../../api/class";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -33,34 +38,52 @@ export interface ISubject {
   name: string;
 }
 
-const CreateClass: FC = () => {
+const UpdateClass: FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const [subjectList, setSubjectList] = useState<ISubject[]>();
+  const [form] = Form.useForm();
+
+  // @ts-ignore
+  const { id: classId } = useParams();
+
   useEffect(() => {
     getAllSubject().then((data) => {
-      console.log(data);
       const subjectList = data?.data?.subjects;
       if (subjectList && Array.isArray(subjectList)) {
         setSubjectList(subjectList);
       }
     });
+
+    fetchClassInfo();
   }, []);
 
+  const fetchClassInfo = async () => {
+    const res = await getClassById(classId);
+    if (res?.success) {
+      const classInfo = res?.data?.class;
+      form.setFieldsValue({
+        name: classInfo?.name,
+        detail: classInfo?.detail,
+        subjectId: classInfo?.subjectId,
+        startTime: moment(classInfo?.startTime),
+        endTime: moment(classInfo?.endTime),
+      });
+    }
+  };
+
   const onFinishFailed = () => {};
-  const onFinish = async (data: ICreateClass) => {
-    console.log(data);
-    const res = await createClass({
+  const onFinish = async (data: IUpdateClass) => {
+    const res = await updateClass(classId, {
       name: data.name,
-      endTime: moment(data.endTime).unix(),
-      startTime: moment(data.startTime).unix(),
+      endTime: moment(data.endTime).valueOf(),
+      startTime: moment(data.startTime).valueOf(),
       detail: data.detail,
       subjectId: data.subjectId,
     });
-    console.log(res);
     if (res?.success) {
       await notification.success({
-        message: t("createClassSuccess"),
+        message: t("updateSuccess"),
       });
       history.push("/class");
     }
@@ -70,6 +93,7 @@ const CreateClass: FC = () => {
     <div>
       <Form
         name="basic"
+        form={form}
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -124,4 +148,4 @@ const CreateClass: FC = () => {
   );
 };
 
-export default withLayout("Tạo lớp")(CreateClass);
+export default withLayout("Cập nhật thông tin lớp")(UpdateClass);
